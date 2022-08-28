@@ -26,7 +26,15 @@ public class UserService {
             if (!isDuplicateUsername(request.getUsername())) {
                 if (isValidPassword(request.getPassword1())) {
                     if (isSamePassword(request.getPassword1(), request.getPassword2())) {
-                        //user = new User(UUID.randomUUID().toString(), request.getUsername(), request.getPassword1());
+                        user = new User();
+                        user.setUser_id(UUID.randomUUID().toString());
+                        user.setUsername(request.getUsername());
+                        user.setEmail(request.getEmail());
+                        user.setPassword(request.getPassword1());
+                        user.setGiven_name(request.getGiven_name());
+                        user.setSurname(request.getSurname());
+                        user.setActive(true);
+                        user.setRole_id("");
                         userDAO.save(user);
                     }
                 }

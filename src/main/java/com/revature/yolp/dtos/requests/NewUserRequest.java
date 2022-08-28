@@ -1,18 +1,27 @@
 package com.revature.yolp.dtos.requests;
 
 public class NewUserRequest {
+
     private String username;
+    private String email;
     private String password1;
+
     private String password2;
+    private String given_name;
+    private String surname;
+    private String role_id;
 
-    public NewUserRequest() {
+    private boolean isActive;
 
+    public boolean isActive() {
+        return isActive;
     }
 
-    public NewUserRequest(String username, String password1, String password2) {
-        this.username = username;
-        this.password1 = password1;
-        this.password2 = password2;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public NewUserRequest() {
     }
 
     public String getUsername() {
@@ -21,6 +30,14 @@ public class NewUserRequest {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword1() {
@@ -39,12 +56,27 @@ public class NewUserRequest {
         this.password2 = password2;
     }
 
-    @Override
-    public String toString() {
-        return "NewUserRequest{" +
-                "username='" + username + '\'' +
-                ", password1='" + password1 + '\'' +
-                ", password2='" + password2 + '\'' +
-                '}';
+    public String getGiven_name() {
+        return given_name;
+    }
+
+    public void setGiven_name(String given_name) {
+        this.given_name = given_name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(String role_id) {
+        this.role_id = role_id;
     }
 }
