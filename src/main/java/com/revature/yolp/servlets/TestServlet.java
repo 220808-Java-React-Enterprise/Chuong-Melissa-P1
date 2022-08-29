@@ -9,6 +9,6 @@ import java.io.IOException;
 public class TestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("<h1>Hello World!</h1>");
+        resp.getWriter().write("<h1>This is test servlet!</h1>");
     }
 }

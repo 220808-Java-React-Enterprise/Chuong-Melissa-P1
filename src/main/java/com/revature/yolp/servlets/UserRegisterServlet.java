@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UserServlet extends HttpServlet {
+public class UserRegisterServlet extends HttpServlet {
     private final ObjectMapper mapper;
     private final UserService userService;
 
-    public UserServlet(ObjectMapper mapper, UserService userService) {
+    public UserRegisterServlet(ObjectMapper mapper, UserService userService) {
         this.mapper = mapper;
         this.userService = userService;
     }
@@ -25,26 +25,17 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            /* New user request from Postman */
-            /* mapper obj convert JSON request and store into into a NewUserRequest.class */
             NewUserRequest request = mapper.readValue(req.getInputStream(), NewUserRequest.class);
+            User createdUser = userService.register(request);
+            resp.setContentType("application/json");
+            resp.setStatus(200);
+            resp.getWriter().write(mapper.writeValueAsString(createdUser.getUser_id()));
 
-            String[] path = req.getRequestURI().split("/");
-
-            if (path[3].equals("signup")) {
-                User createdUser = userService.register(request);
-
-                resp.setStatus(200); // CREATED
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(createdUser.getUser_id()));
-            } else {
-                System.out.println("NO");
-            }
         } catch (InvalidRequestException e) {
-            resp.setStatus(404); // BAD REQUEST
+            resp.setStatus(404);
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
-            resp.setStatus(409); // CONFLICT
+            resp.setStatus(409);
         }
     }
 }

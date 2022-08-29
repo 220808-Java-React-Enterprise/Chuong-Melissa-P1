@@ -6,7 +6,7 @@ import com.revature.yolp.services.TokenService;
 import com.revature.yolp.services.UserService;
 import com.revature.yolp.servlets.AuthServlet;
 import com.revature.yolp.servlets.TestServlet;
-import com.revature.yolp.servlets.UserServlet;
+import com.revature.yolp.servlets.UserRegisterServlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -20,13 +20,13 @@ public class ContextLoaderListener implements ServletContextListener {
 
         /* Dependency Injection */
         TestServlet testServlet = new TestServlet();
-        UserServlet userServlet = new UserServlet(mapper, new UserService(new UserDAO()));
+        UserRegisterServlet userRegisterServlet = new UserRegisterServlet(mapper, new UserService(new UserDAO()));
         AuthServlet authServlet = new AuthServlet(mapper, new TokenService(new JwtConfig()), new UserService(new UserDAO()));
 
         /* Need ServletContext class to map whatever servlet to url path. */
         ServletContext context = sce.getServletContext();
         context.addServlet("TestServlet", testServlet).addMapping("/test");
-        context.addServlet("UserServlet", userServlet).addMapping("/users/*");
+        context.addServlet("UserRegisterServlet", userRegisterServlet).addMapping("/users/register");
         context.addServlet("AuthServlet", authServlet).addMapping("/auth");
     }
 

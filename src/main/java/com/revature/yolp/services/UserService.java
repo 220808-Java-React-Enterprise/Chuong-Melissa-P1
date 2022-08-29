@@ -19,6 +19,7 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
+    // register a new user to the system. validation on username and password
     public User register(NewUserRequest request) {
         User user = null;
 
@@ -33,8 +34,8 @@ public class UserService {
                         user.setPassword(request.getPassword1());
                         user.setGiven_name(request.getGiven_name());
                         user.setSurname(request.getSurname());
-                        user.setActive(true);
-                        user.setRole_id("");
+                        user.setActive(request.isActive());
+                        user.setRole_id(request.getRole_id());
                         userDAO.save(user);
                     }
                 }
