@@ -11,14 +11,18 @@ public class NewUserRequest {
     private String surname;
     private String role_id;
 
-    private boolean isActive;
+    private boolean is_active;
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isIs_active() {
+        return is_active;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public boolean getIs_active() {
+        return this.is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
     }
 
     public NewUserRequest() {

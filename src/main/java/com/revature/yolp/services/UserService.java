@@ -34,7 +34,7 @@ public class UserService {
                         user.setPassword(request.getPassword1());
                         user.setGiven_name(request.getGiven_name());
                         user.setSurname(request.getSurname());
-                        user.setActive(request.isActive());
+                        user.setIs_active(request.getIs_active());
                         user.setRole_id(request.getRole_id());
                         userDAO.save(user);
                     }

@@ -7,7 +7,7 @@ public class User {
     private String password;
     private String given_name;
     private String surname;
-    private boolean isActive;
+    private boolean is_active;
     private String role_id;
 
     public User() {
@@ -80,12 +80,12 @@ public class User {
         this.surname = surname;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isIs_active() {
+        return is_active;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
     }
 
     public String getRole_id() {
@@ -105,7 +105,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", given_name='" + given_name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", isActive=" + isActive +
+                ", isActive=" + is_active +
                 ", role_id='" + role_id + '\'' +
                 '}';
     }
