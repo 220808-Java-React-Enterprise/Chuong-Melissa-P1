@@ -37,6 +37,7 @@ public class AuthServlet extends HttpServlet {
             resp.setHeader("Authorization", token);
             resp.setContentType("application/json");
             resp.getWriter().write(mapper.writeValueAsString(principal));
+
         } catch (InvalidRequestException e) {
             resp.setStatus(404); // BAD REQUEST
         } catch (AuthenticationException e) {

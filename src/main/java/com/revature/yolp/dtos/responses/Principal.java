@@ -1,26 +1,26 @@
 package com.revature.yolp.dtos.responses;
 
 public class Principal {
-    private String id;
+    private String user_id;
     private String username;
-    private String role;
+    private String role_id;
 
     public Principal() {
 
     }
 
-    public Principal(String id, String username, String role) {
-        this.id = id;
+    public Principal(String user_id, String username, String role_id) {
+        this.user_id = user_id;
         this.username = username;
-        this.role = role;
+        this.role_id = role_id;
     }
 
-    public String getId() {
-        return id;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {
@@ -31,20 +31,11 @@ public class Principal {
         this.username = username;
     }
 
-    public String getRole() {
-        return role;
+    public String getRole_id() {
+        return role_id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "Principal{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
-                ", role='" + role + '\'' +
-                '}';
+    public void setRole_id(String role_id) {
+        this.role_id = role_id;
     }
 }

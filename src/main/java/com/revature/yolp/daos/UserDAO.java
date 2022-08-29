@@ -91,10 +91,18 @@ public class UserDAO implements CrudDAO<User> {
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next())
-                return new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+            if (rs.next()) {
+                String user_id = rs.getString("user_id");
+                String usernameTemp = rs.getString("username");
+                String role_id = rs.getString("role_id");
+                return new User(user_id, usernameTemp, role_id );
+            }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+            throw
+                    new InvalidSQLException(
+                            "An error occurred when tyring to getUserByUsernameAndPassword() to the database." +
+                            "username:" + username +
+                            "  password:" + password);
         }
 
         return null;

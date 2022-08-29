@@ -27,7 +27,7 @@ public class ContextLoaderListener implements ServletContextListener {
         ServletContext context = sce.getServletContext();
         context.addServlet("TestServlet", testServlet).addMapping("/test");
         context.addServlet("UserRegisterServlet", userRegisterServlet).addMapping("/users/register");
-        context.addServlet("AuthServlet", authServlet).addMapping("/auth");
+        context.addServlet("AuthServlet", authServlet).addMapping("/users/auth");
     }
 
     @Override
