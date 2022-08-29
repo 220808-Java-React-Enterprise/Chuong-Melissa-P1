@@ -1,10 +1,14 @@
 package com.revature.yolp.utils.database;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Properties;
 
 /* Singleton design pattern */
@@ -25,7 +29,30 @@ public class ConnectionFactory {
 //        try {
 //            String dir = System.getProperty("user.dir");
 //            System.out.println("\n===================================" + dir + "==================================\n");
-//            props.load(new FileReader("src/main/resources/db.properties"));
+//            ServletConfig sc = new ServletConfig() {
+//                @Override
+//                public String getServletName() {
+//                    return null;
+//                }
+//
+//                @Override
+//                public ServletContext getServletContext() {
+//                    return null;
+//                }
+//
+//                @Override
+//                public String getInitParameter(String s) {
+//                    return null;
+//                }
+//
+//                @Override
+//                public Enumeration<String> getInitParameterNames() {
+//                    return null;
+//                }
+//            } ;
+//            ServletContext context = sc.getServletContext();
+//            InputStream propStream = context.getResourceAsStream("/WEB-INF/classes/app.properties");
+//            props.load(propStream);
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
