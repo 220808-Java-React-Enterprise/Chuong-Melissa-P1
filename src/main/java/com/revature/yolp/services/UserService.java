@@ -10,6 +10,7 @@ import com.revature.yolp.utils.custom_exceptions.InvalidRequestException;
 import com.revature.yolp.utils.custom_exceptions.InvalidUserException;
 import com.revature.yolp.utils.custom_exceptions.ResourceConflictException;
 
+import java.util.List;
 import java.util.UUID;
 
 public class UserService {
@@ -34,8 +35,8 @@ public class UserService {
                         user.setPassword(request.getPassword1());
                         user.setGiven_name(request.getGiven_name());
                         user.setSurname(request.getSurname());
-                        user.setIs_active(request.getIs_active());
-                        user.setRole_id(request.getRole_id());
+                        user.setIs_active(false);
+                        user.setRole_id("role2");
                         userDAO.save(user);
                     }
                 }
@@ -43,6 +44,10 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.getAll();
     }
 
     public Principal login(LoginRequest request) {

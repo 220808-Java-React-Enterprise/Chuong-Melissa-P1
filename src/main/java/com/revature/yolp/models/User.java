@@ -80,7 +80,7 @@ public class User {
         this.surname = surname;
     }
 
-    public boolean isIs_active() {
+    public boolean is_active() {
         return is_active;
     }
 

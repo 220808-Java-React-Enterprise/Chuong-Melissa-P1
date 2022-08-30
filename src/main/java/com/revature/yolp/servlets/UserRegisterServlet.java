@@ -36,6 +36,8 @@ public class UserRegisterServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+        } catch (Exception e) {
+            resp.setStatus(404);
         }
     }
 }
