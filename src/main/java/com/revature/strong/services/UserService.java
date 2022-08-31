@@ -3,9 +3,12 @@ package com.revature.strong.services;
 import com.revature.strong.daos.UserDAO;
 import com.revature.strong.dtos.request.NewUserRequest;
 import com.revature.strong.models.User;
+import com.revature.strong.utils.custom_exceptions.InvalidRequestException;
 import com.revature.strong.utils.custom_exceptions.InvalidUserException;
+import com.revature.strong.utils.custom_exceptions.ResourceConflictException;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserService {
     //is the API, UI talks to Services and the services talk to the DAO
@@ -30,7 +33,7 @@ public class UserService {
 
     public boolean isValidPassword(String password) {
         if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) {
-            throw new InvalidUserException("\nPassword not Valid.\n*Password must have a minimum of 8 character" +
+            throw new InvalidRequestException("\nPassword not Valid.\n*Password must have a minimum of 8 character" +
                     "\n*Password must have at least one letter" +
                     "\n*Password must have at least one number");
 
@@ -38,8 +41,19 @@ public class UserService {
         return true;
     }
 
-    public User register(NewUserRequest requestuser)  {
+    public User register(NewUserRequest request)  {
         User user = null;
+
+        if(isValidUsername(request.getUsername())) {
+            if (!isDuplicateUsername(request.getUsername())) {
+                if (isValidPassword(request.getPassword1())) {
+                    if (isSamePassword(request.getPassword1(), request.getPassword2())) {
+                        user = new User(request.getUsername(), request.getPassword1(), UUID.randomUUID().toString(), false);
+                        userDAO.save(user);
+                    }
+                }
+            }
+        }
 
         return user;
     }
@@ -51,13 +65,13 @@ public class UserService {
     }
 
     public boolean isDuplicateUsername(String username) {
-        if (userDAO.getUsername(username) != null) throw new InvalidUserException("\nSorry, " +
+        if (userDAO.getUsername(username) != null) throw new ResourceConflictException("\nSorry, " +
                 username + " already has been taken :(");
         return false;
     }
 
     public boolean isSamePassword(String userpassword, String password2){
-        if (!userpassword.equals(password2)) throw new InvalidUserException("\nPassword do not match :(");
+        if (!userpassword.equals(password2)) throw new InvalidRequestException("\nPassword do not match :(");
         return true;
     }
 
