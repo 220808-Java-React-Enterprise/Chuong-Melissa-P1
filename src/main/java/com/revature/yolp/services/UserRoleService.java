@@ -27,13 +27,14 @@ public class UserRoleService {
     }
 
 
-    public void update(UserRole obj) {
-
+    public void update(UserRoleRequest request) {
+        UserRole userRole = new UserRole(request.getRole_id(), request.getRole());
+        userRoleDAO.update(userRole);
     }
 
 
     public void delete(String id) {
-
+        userRoleDAO.delete(id);
     }
 
 
@@ -43,6 +44,6 @@ public class UserRoleService {
 
 
     public List<UserRole> getAll() {
-        return null;
+        return userRoleDAO.getAll();
     }
 }

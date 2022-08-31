@@ -4,6 +4,10 @@ public class ReimburstmentType {
     private String type_id;
     private String type;
 
+    public ReimburstmentType() {
+
+    }
+
     public ReimburstmentType(String type_id, String type) {
         this.type_id = type_id;
         this.type = type;
@@ -24,5 +28,13 @@ public class ReimburstmentType {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "ReimburstmentType{" +
+                "type_id='" + type_id + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }// end class
