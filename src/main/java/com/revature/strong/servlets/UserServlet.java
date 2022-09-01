@@ -42,6 +42,7 @@ public class UserServlet extends HttpServlet {
             }
         } catch (InvalidRequestException e) {
             resp.setStatus(404); //bad request
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409); //conflict
         }

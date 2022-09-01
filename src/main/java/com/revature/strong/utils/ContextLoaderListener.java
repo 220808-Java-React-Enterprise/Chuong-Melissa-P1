@@ -3,6 +3,7 @@ package com.revature.strong.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.strong.daos.UserDAO;
 import com.revature.strong.services.UserService;
+import com.revature.strong.servlets.AuthServlet;
 import com.revature.strong.servlets.TestServlet;
 import com.revature.strong.servlets.UserServlet;
 
@@ -19,11 +20,13 @@ public class ContextLoaderListener implements ServletContextListener {
         //dependancy Injection
         TestServlet testServlet = new TestServlet();
         UserServlet userServlet = new UserServlet(mapper, new UserService(new UserDAO()));
+        AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UserDAO()));
 
         //Need ServletContext class to map whatever servlet to url path.
         ServletContext context = sce.getServletContext();
         context.addServlet("TestServlet", testServlet).addMapping("/test");
         context.addServlet("UserServlet", userServlet).addMapping("/users/*");
+        context.addServlet("AuthServlet", authServlet).addMapping("/auth");
     }
 
     @Override
