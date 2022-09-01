@@ -1,6 +1,8 @@
 package com.revature.strong.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.strong.dtos.request.LoginRequest;
+import com.revature.strong.dtos.response.Principal;
 import com.revature.strong.services.UserService;
 import com.revature.strong.utils.custom_exceptions.AuthenticationException;
 import com.revature.strong.utils.custom_exceptions.InvalidRequestException;
@@ -23,7 +25,12 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try{
+            LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
+            Principal principal = userService.login(request);
 
+            resp.setStatus(200);
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(principal));
 
         }catch (InvalidRequestException e){
             resp.setStatus(404);

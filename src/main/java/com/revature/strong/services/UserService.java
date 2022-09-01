@@ -1,8 +1,11 @@
 package com.revature.strong.services;
 
 import com.revature.strong.daos.UserDAO;
+import com.revature.strong.dtos.request.LoginRequest;
 import com.revature.strong.dtos.request.NewUserRequest;
+import com.revature.strong.dtos.response.Principal;
 import com.revature.strong.models.User;
+import com.revature.strong.utils.custom_exceptions.AuthenticationException;
 import com.revature.strong.utils.custom_exceptions.InvalidRequestException;
 import com.revature.strong.utils.custom_exceptions.InvalidUserException;
 import com.revature.strong.utils.custom_exceptions.ResourceConflictException;
@@ -58,10 +61,10 @@ public class UserService {
         return user;
     }
 
-    public User login(String username, String userpassword){
-        User user = userDAO.getUserByUsernameAndPassword(username, userpassword);
-        if (user == null) throw new InvalidUserException("\nIncorrect username or password :(");
-        return user;
+    public Principal login(LoginRequest request){
+        User user = userDAO.getUserByUsernameAndPassword(request.getUsername(), request.getPassword());
+        if (user == null) throw new AuthenticationException("\nIncorrect username or password :(");
+        return new Principal(user.getId(), user.getUsername(), user.getCoach());
     }
 
     public boolean isDuplicateUsername(String username) {
