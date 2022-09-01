@@ -40,7 +40,7 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
 
-            return new Principal(claims.getId(), claims.getSubject(), claims.get("role", String.class));
+            return new Principal(claims.getId(), claims.getSubject(), claims.get("Coach", Boolean.class));
         } catch (Exception e) {
             return null;
         }

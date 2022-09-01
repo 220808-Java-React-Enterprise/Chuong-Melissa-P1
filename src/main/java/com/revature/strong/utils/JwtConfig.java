@@ -1,4 +1,4 @@
-package com.revature.yolp.utils;
+package com.revature.strong.utils;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 
