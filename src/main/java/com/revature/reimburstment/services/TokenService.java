@@ -34,7 +34,7 @@ public class TokenService {
     }
 
     public Principal extractRequesterDetails(String token) {
-        System.out.println("\n========================Inside extractRequesterDetails() token: =============" + token);
+
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtConfig.getSigningKey())
@@ -44,10 +44,6 @@ public class TokenService {
             String id = claims.getId();
             String username = claims.getSubject();
             String roleId = claims.get("role_id", String.class);
-
-            System.out.println("rold_id :" + roleId);
-            System.out.println("username : " + username);
-            System.out.println("role_id");
 
             return new Principal(claims.getId(), claims.getSubject(), claims.get("role_id", String.class));
         } catch (Exception e) {
