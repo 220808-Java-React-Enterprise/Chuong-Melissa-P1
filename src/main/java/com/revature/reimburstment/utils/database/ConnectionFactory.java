@@ -40,9 +40,6 @@ public class ConnectionFactory {
     }
 
     public Connection getConnection() throws SQLException {
-//        String url = "jdbc:postgresql://revature.cbfjslydmnoj.us-west-1.rds.amazonaws.com:5432/postgres?currentSchema=reimbursement";
-//        String username = "postgres";
-//        String password = "revature";
 
         String url = props.getProperty("url");
         String username = props.getProperty("username");
