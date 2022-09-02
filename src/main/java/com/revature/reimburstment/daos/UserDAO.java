@@ -110,7 +110,7 @@ public class UserDAO implements CrudDAO<User> {
 
     public User getUserByUsernameAndPassword(String username, String password) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
+            PreparedStatement ps = con.prepareStatement("select * from ers_users where username = ? and password = ?");
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();

@@ -1,8 +1,15 @@
 package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.reimburstment.daos.ReimburstmentTypeDAO;
 import com.revature.reimburstment.dtos.requests.NewUserRequest;
+import com.revature.reimburstment.dtos.responses.Principal;
+import com.revature.reimburstment.models.ReimburstmentType;
 import com.revature.reimburstment.models.User;
+import com.revature.reimburstment.models.UserRole;
+import com.revature.reimburstment.services.ReimburstmentTypeService;
+import com.revature.reimburstment.services.TokenService;
+import com.revature.reimburstment.services.UserRoleService;
 import com.revature.reimburstment.services.UserService;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
@@ -17,18 +24,51 @@ import java.util.List;
 public class UserServlet extends HttpServlet  {
 
     private final ObjectMapper mapper;
+
+    private TokenService tokenService;
     private final UserService userService;
 
-    public UserServlet(ObjectMapper mapper, UserService userService) {
+    private UserRoleService userRoleService;
+
+    public UserServlet(ObjectMapper mapper, TokenService tokenService, UserService userService, UserRoleService userRoleService) {
         this.mapper = mapper;
+        this.tokenService = tokenService;
         this.userService = userService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> userList = userService.getAllUsers();
-        resp.setContentType("application/json");
-        resp.getWriter().write(mapper.writeValueAsString(userList));
+        try {
+            String role = getRole(req, resp);
+            if (role.equals("ADMIN")) {
+                List<User> userList = userService.getAllUsers();
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(userList));
+            } else {
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(role));
+            }
+        }catch(NullPointerException e) {
+            resp.setStatus(401);
+        }
+    }
+
+    // only ADMIN and FINANCE users are allowed to administer the system
+    private String getRole(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String token = req.getHeader("Authorization");
+            Principal principal = tokenService.extractRequesterDetails(token);
+            String roleId = principal.getRole_id();
+            UserRole userRole = userRoleService.getById(roleId);
+
+            return userRole.getRole();
+        }catch (NullPointerException e) {
+
+        }catch (Exception e) {
+
+        }
+        return null;
     }
 
     @Override

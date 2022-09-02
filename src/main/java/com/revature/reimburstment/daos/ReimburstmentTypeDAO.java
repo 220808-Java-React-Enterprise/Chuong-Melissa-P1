@@ -2,6 +2,7 @@ package com.revature.reimburstment.daos;
 
 import com.revature.reimburstment.models.ReimburstmentType;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidSQLException;
+import com.revature.reimburstment.utils.custom_exceptions.InvalidTypeException;
 import com.revature.reimburstment.utils.database.ConnectionFactory;
 
 import java.io.IOException;
@@ -62,6 +63,11 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
 
     @Override
     public ReimburstmentType getById(String id) {
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from ers_reimbursement_types where type_id = ?");
+        }catch(SQLException e) {
+            throw new InvalidTypeException("Invalid Reimburstment Type ID");
+        }
         return null;
     }
 

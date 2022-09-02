@@ -24,13 +24,19 @@ public class ContextLoaderListener implements ServletContextListener {
         TestServlet testServlet = new TestServlet();
         AuthServlet authServlet = new AuthServlet(mapper, new TokenService(new JwtConfig()), new UserService(new UserDAO()));
         UserRegisterServlet userRegisterServlet = new UserRegisterServlet(mapper, new UserService(new UserDAO()));
-        UserServlet userServlet = new UserServlet(mapper, new UserService(new UserDAO()));
+        UserServlet userServlet = new UserServlet(mapper, new TokenService(new JwtConfig()),
+                new UserService(new UserDAO()), new UserRoleService(new UserRoleDAO()));
 
-        UserRoleServlet userRoleServlet = new UserRoleServlet(mapper, new UserRoleService(new UserRoleDAO()));
+        UserRoleServlet userRoleServlet = new UserRoleServlet(mapper,  new TokenService(new JwtConfig()), new UserRoleService(new UserRoleDAO()));
 
 
         ReimburstmentTypeServlet reimburstmentTypeServlet =
-                new ReimburstmentTypeServlet(mapper, new ReimburstmentTypeService(new ReimburstmentTypeDAO())  );
+                new ReimburstmentTypeServlet(
+                        mapper,
+                        new TokenService(new JwtConfig()),
+                        new ReimburstmentTypeService(new ReimburstmentTypeDAO()),
+                        new UserRoleService(new UserRoleDAO()));
+
 
         /* Need ServletContext class to map whatever servlet to url path. */
         ServletContext context = sce.getServletContext();

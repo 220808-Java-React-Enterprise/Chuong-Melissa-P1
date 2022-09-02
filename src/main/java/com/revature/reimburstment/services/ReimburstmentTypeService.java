@@ -37,7 +37,7 @@ public class ReimburstmentTypeService {
 
 
     public ReimburstmentType getById(String id) {
-        return null;
+        return reimburstmentTypeDAO.getById(id);
     }
 
 

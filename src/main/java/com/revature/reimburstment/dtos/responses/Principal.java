@@ -38,4 +38,13 @@ public class Principal {
     public void setRole_id(String role_id) {
         this.role_id = role_id;
     }
+
+    @Override
+    public String toString() {
+        return "Principal{" +
+                "user_id='" + user_id + '\'' +
+                ", username='" + username + '\'' +
+                ", role_id='" + role_id + '\'' +
+                '}';
+    }
 }

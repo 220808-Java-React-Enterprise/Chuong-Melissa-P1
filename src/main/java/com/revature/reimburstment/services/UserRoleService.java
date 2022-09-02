@@ -37,7 +37,7 @@ public class UserRoleService {
 
 
     public UserRole getById(String id) {
-        return null;
+        return userRoleDAO.getById(id);
     }
 
 

@@ -26,22 +26,46 @@ public class AuthServlet extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
             Principal principal = userService.login(request);
-
             String token = tokenService.generateToken(principal);
 
             resp.setStatus(200);
-            resp.setHeader("Authorization", token);
+            resp.setHeader("Authoriztion", token);
             resp.setContentType("application/json");
             resp.getWriter().write(mapper.writeValueAsString(principal));
-
-        } catch (InvalidRequestException e) {
-            resp.setStatus(404); // BAD REQUEST
-        } catch (AuthenticationException e) {
-            resp.setStatus(401); // INVALID CRED
+        }catch(InvalidRequestException e) {
+            resp.setStatus(404);
+        }catch (AuthenticationException e) {
+            resp.setStatus(401);
         }
+
+//        LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
+//        resp.setContentType("application/json");
+//        resp.getWriter().write(mapper.writeValueAsString(request.getUsername() + " : " + request.getPassword()));
+
+//        try {
+//            LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
+//            Principal principal = userService.login(request);
+//
+//            String token = tokenService.generateToken(principal);
+//
+//            resp.setStatus(200);
+//            resp.setHeader("Authorization", token);
+//            resp.setContentType("application/json");
+//            resp.getWriter().write(mapper.writeValueAsString(principal));
+//
+//        } catch (InvalidRequestException e) {
+//            resp.setStatus(404); // BAD REQUEST
+//        } catch (AuthenticationException e) {
+//            resp.setStatus(401); // INVALID CRED
+//        }
     }
 }

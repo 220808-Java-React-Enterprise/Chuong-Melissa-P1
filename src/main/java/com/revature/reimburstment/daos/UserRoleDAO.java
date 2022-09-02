@@ -57,7 +57,21 @@ public class UserRoleDAO implements CrudDAO<UserRole> {
 
     @Override
     public UserRole getById(String id) {
-        return null;
+        UserRole userRole =new UserRole();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps =
+                    con.prepareStatement("select * from ers_user_roles where role_id = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                userRole.setRole_id(rs.getString("role_id"));
+                userRole.setRole(rs.getString("role"));
+            }
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete()");
+        }
+        return userRole;
     }
 
     @Override

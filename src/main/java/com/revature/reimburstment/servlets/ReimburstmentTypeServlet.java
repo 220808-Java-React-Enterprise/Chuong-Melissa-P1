@@ -2,8 +2,12 @@ package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.reimburstment.dtos.requests.ReimburstmentTypeRequest;
+import com.revature.reimburstment.dtos.responses.Principal;
 import com.revature.reimburstment.models.ReimburstmentType;
+import com.revature.reimburstment.models.UserRole;
 import com.revature.reimburstment.services.ReimburstmentTypeService;
+import com.revature.reimburstment.services.TokenService;
+import com.revature.reimburstment.services.UserRoleService;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
 
@@ -16,11 +20,19 @@ import java.util.List;
 
 public class ReimburstmentTypeServlet extends HttpServlet {
     private final ObjectMapper mapper;
+
+    private final TokenService tokenService;
     private final ReimburstmentTypeService reimburstmentTypeService;
 
-    public ReimburstmentTypeServlet(ObjectMapper mapper, ReimburstmentTypeService reimburstmentTypeService) {
+    private final UserRoleService userRoleService;
+
+    public ReimburstmentTypeServlet(ObjectMapper mapper, TokenService tokenService,
+                                    ReimburstmentTypeService reimburstmentTypeService,
+                                    UserRoleService userRoleService) {
         this.mapper = mapper;
         this.reimburstmentTypeService = reimburstmentTypeService;
+        this.tokenService = tokenService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -44,15 +56,20 @@ public class ReimburstmentTypeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        resp.setStatus(200);
-//        resp.getWriter().write(mapper.writeValueAsString("Get All Reimbustment Types"));
+
 
         try {
-            List<ReimburstmentType> types = reimburstmentTypeService.getAll();
-            System.out.println(types);
-            resp.setContentType("application/json");
-            resp.setStatus(200);
-            resp.getWriter().write(mapper.writeValueAsString(types));
+            String role = getRole(req, resp);
+            if(role.equals("ADMIN")) {
+                List<ReimburstmentType> types = reimburstmentTypeService.getAll();
+                System.out.println(types);
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString(types));
+            }else {
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString(role));
+            }
 
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
@@ -62,6 +79,23 @@ public class ReimburstmentTypeServlet extends HttpServlet {
         } catch (Exception e) {
             resp.setStatus(404);
         }
+    }
+
+    // only ADMIN and FINANCE users are allowed to administer the system
+    private String getRole(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String token = req.getHeader("Authorization");
+            Principal principal = tokenService.extractRequesterDetails(token);
+            String roleId = principal.getRole_id();
+            UserRole userRole = userRoleService.getById(roleId);
+
+            return userRole.getRole();
+        }catch (NullPointerException e) {
+
+        }catch (Exception e) {
+
+        }
+        return null;
     }
 
     @Override

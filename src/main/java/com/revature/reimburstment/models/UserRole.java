@@ -4,6 +4,9 @@ public class UserRole {
     private String role_id;
     private String role;
 
+    public UserRole() {
+
+    }
     public UserRole(String role_id, String role) {
         this.role_id = role_id;
         this.role = role;

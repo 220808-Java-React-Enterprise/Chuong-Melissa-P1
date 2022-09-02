@@ -7,6 +7,7 @@ import com.revature.reimburstment.dtos.responses.Principal;
 import com.revature.reimburstment.models.User;
 import com.revature.reimburstment.utils.custom_exceptions.AuthenticationException;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
+import com.revature.reimburstment.utils.custom_exceptions.InvalidTypeException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
 
 import java.util.List;
