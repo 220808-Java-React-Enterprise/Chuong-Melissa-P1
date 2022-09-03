@@ -1,15 +1,12 @@
 package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.reimburstment.daos.ReimburstmentTypeDAO;
 import com.revature.reimburstment.dtos.requests.NewUserRequest;
 import com.revature.reimburstment.dtos.responses.Principal;
-import com.revature.reimburstment.models.ReimburstmentType;
 import com.revature.reimburstment.models.User;
 import com.revature.reimburstment.models.UserRole;
-import com.revature.reimburstment.services.ReimburstmentTypeService;
 import com.revature.reimburstment.services.TokenService;
-import com.revature.reimburstment.services.UserRoleService;
+import com.revature.reimburstment.services.RoleService;
 import com.revature.reimburstment.services.UserService;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
@@ -28,9 +25,9 @@ public class UserServlet extends HttpServlet  {
     private TokenService tokenService;
     private final UserService userService;
 
-    private UserRoleService userRoleService;
+    private RoleService userRoleService;
 
-    public UserServlet(ObjectMapper mapper, TokenService tokenService, UserService userService, UserRoleService userRoleService) {
+    public UserServlet(ObjectMapper mapper, TokenService tokenService, UserService userService, RoleService userRoleService) {
         this.mapper = mapper;
         this.tokenService = tokenService;
         this.userService = userService;

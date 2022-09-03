@@ -1,11 +1,14 @@
 package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.reimburstment.dtos.requests.ReimburstmentStatusRequest;
 import com.revature.reimburstment.dtos.requests.UserRoleRequest;
 import com.revature.reimburstment.dtos.responses.Principal;
+import com.revature.reimburstment.models.ReimburstmentStatus;
 import com.revature.reimburstment.models.UserRole;
-import com.revature.reimburstment.services.TokenService;
 import com.revature.reimburstment.services.RoleService;
+import com.revature.reimburstment.services.TokenService;
+import com.revature.reimburstment.services.ReimburstStatusService;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
 
@@ -16,16 +19,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class UserRoleServlet extends HttpServlet {
+public class ReimburstStatusServlet extends HttpServlet {
     private final ObjectMapper mapper;
 
     private TokenService tokenService;
+    private final ReimburstStatusService reimburstStatusService;
+
     private final RoleService userRoleService;
 
-    public UserRoleServlet(ObjectMapper mapper, TokenService tokenService, RoleService userRoleService) {
+    public ReimburstStatusServlet(ObjectMapper mapper,
+                                  TokenService tokenService,
+                                  ReimburstStatusService userReimburstStatusService,
+                                  RoleService roleService) {
         this.mapper = mapper;
-        this.userRoleService = userRoleService;
+        this.reimburstStatusService = userReimburstStatusService;
         this.tokenService = tokenService;
+        this.userRoleService = roleService;
     }
 
     @Override
@@ -33,11 +42,12 @@ public class UserRoleServlet extends HttpServlet {
         try {
             String role = getRole(req, resp);
             if (role.equals("ADMIN")) {
-                UserRoleRequest request = mapper.readValue(req.getInputStream(), UserRoleRequest.class);
-                UserRole userRole = userRoleService.saveUserRole(request);
+                ReimburstmentStatusRequest request =
+                        mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
+                ReimburstmentStatus reimburstStatus = reimburstStatusService.saveReimburstmentStatus(request);
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString(userRole.getRole_id()));
+                resp.getWriter().write(mapper.writeValueAsString(reimburstStatus.getStastus_id()));
             } else {
                 resp.setContentType("application/json");
                 resp.getWriter().write(mapper.writeValueAsString(role));
@@ -58,9 +68,9 @@ public class UserRoleServlet extends HttpServlet {
         try {
             String role = getRole(req, resp);
             if (role.equals("ADMIN")) {
-                List<UserRole> userRoles = userRoleService.getAll();
+                List<ReimburstmentStatus> statusList = reimburstStatusService.getAll();
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(userRoles));
+                resp.getWriter().write(mapper.writeValueAsString(statusList));
             } else {
                 resp.setContentType("application/json");
                 resp.getWriter().write(mapper.writeValueAsString(role));
@@ -76,7 +86,7 @@ public class UserRoleServlet extends HttpServlet {
             String token = req.getHeader("Authorization");
             Principal principal = tokenService.extractRequesterDetails(token);
             String roleId = principal.getRole_id();
-            UserRole userRole = userRoleService.getById(roleId);
+            UserRole userRole = this.userRoleService.getById(roleId);
 
             return userRole.getRole();
         }catch (NullPointerException e) {
@@ -92,11 +102,11 @@ public class UserRoleServlet extends HttpServlet {
         try {
             String role = getRole(req, resp);
             if (role.equals("ADMIN")) {
-                UserRoleRequest request = mapper.readValue(req.getInputStream(), UserRoleRequest.class);
-                userRoleService.update(request);
+                ReimburstmentStatusRequest request = mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
+                this.reimburstStatusService.update(request);
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("Updated " + request.getRole_id()));
+                resp.getWriter().write(mapper.writeValueAsString("Updated " + request.getStatus_id()));
             }
 
         } catch (InvalidRequestException e) {
@@ -114,11 +124,11 @@ public class UserRoleServlet extends HttpServlet {
         try {
             String role = getRole(req, resp);
             if (role.equals("ADMIN")) {
-                UserRoleRequest request = mapper.readValue(req.getInputStream(), UserRoleRequest.class);
-                userRoleService.delete(request.getRole());
+                ReimburstmentStatusRequest request = mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
+                reimburstStatusService.delete(request.getStatus_id());
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("Deleted " + request.getRole()));
+                resp.getWriter().write(mapper.writeValueAsString("Deleted " + request.getStatus()));
             }
 
         } catch (InvalidRequestException e) {

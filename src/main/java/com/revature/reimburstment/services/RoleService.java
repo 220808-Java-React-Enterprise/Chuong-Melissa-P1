@@ -1,7 +1,7 @@
 package com.revature.reimburstment.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.reimburstment.daos.UserRoleDAO;
+import com.revature.reimburstment.daos.RoleDAO;
 import com.revature.reimburstment.dtos.requests.UserRoleRequest;
 import com.revature.reimburstment.models.UserRole;
 
@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public class UserRoleService {
+public class RoleService {
 
     private ObjectMapper mapper = new ObjectMapper();
-    private UserRoleDAO userRoleDAO;
+    private RoleDAO userRoleDAO;
 
-    public UserRoleService(UserRoleDAO userRoleDAO) {
+    public RoleService(RoleDAO userRoleDAO) {
         this.userRoleDAO = userRoleDAO;
     }
 

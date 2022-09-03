@@ -1,6 +1,6 @@
 package com.revature.reimburstment.daos;
 
-import com.revature.reimburstment.models.UserRole;
+import com.revature.reimburstment.models.ReimburstmentStatus;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidSQLException;
 import com.revature.reimburstment.utils.database.ConnectionFactory;
 
@@ -12,29 +12,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRoleDAO implements CrudDAO<UserRole> {
+public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
     @Override
-    public void save(UserRole obj) throws IOException {
+    public void save(ReimburstmentStatus obj) throws IOException {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("insert into ers_user_roles (role_id, role) values (?, ?)");
-            ps.setString(1, obj.getRole_id());
-            ps.setString(2, obj.getRole());
+                    con.prepareStatement("insert into ers_reimbursement_statuses (status_id, status) values (?, ?)");
+            ps.setString(1, obj.getStastus_id());
+            ps.setString(2, obj.getStatus());
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.save()");
+            throw new InvalidSQLException("An error occurred at UserReimburstStatusDAO.save()");
         }
     }
 
+
+
     @Override
-    public void update(UserRole obj) {
+    public void update(ReimburstmentStatus obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("update ers_user_roles set role = ? where role_id = ?");
-            ps.setString(1, obj.getRole());
-            ps.setString(2, obj.getRole_id());
+                    con.prepareStatement("update ers_reimbursement_statuses set status = ? where status_id = ?");
+            ps.setString(1, obj.getStatus());
+            ps.setString(2, obj.getStastus_id());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at UserRoleDAO.update()");
@@ -46,7 +48,7 @@ public class UserRoleDAO implements CrudDAO<UserRole> {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from ers_user_roles where role = ?");
+                    con.prepareStatement("delete from ers_reimbursement_statuses where status_id = ?");
             ps.setString(1, id);
 
             ps.executeUpdate();
@@ -56,16 +58,16 @@ public class UserRoleDAO implements CrudDAO<UserRole> {
     }
 
     @Override
-    public UserRole getById(String id) {
-        UserRole userRole =new UserRole();
+    public ReimburstmentStatus getById(String id) {
+        ReimburstmentStatus userRole = new ReimburstmentStatus();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("select * from ers_user_roles where role_id = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                userRole.setRole_id(rs.getString("role_id"));
-                userRole.setRole(rs.getString("role"));
+                userRole.setStastus_id(rs.getString("status_id"));
+                userRole.setStatus(rs.getString("status"));
             }
 
         } catch (SQLException e) {
@@ -75,21 +77,22 @@ public class UserRoleDAO implements CrudDAO<UserRole> {
     }
 
     @Override
-    public List<UserRole> getAll() {
-        List<UserRole> roleList = new ArrayList<>();
+    public List<ReimburstmentStatus> getAll() {
+        List<ReimburstmentStatus> statusList = new ArrayList<>();
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("select * from ers_user_roles");
+            PreparedStatement ps = con.prepareStatement("select * from ers_reimbursement_statuses");
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
-                UserRole userRole = new UserRole(rs.getString("role_id"), rs.getString("role"));
-                roleList.add(userRole);
+                ReimburstmentStatus reimburstStatus =
+                        new ReimburstmentStatus(rs.getString("status_id"), rs.getString("status"));
+                statusList.add(reimburstStatus);
             }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when trying to getAll() roles from database.");
+            throw new InvalidSQLException("An error occurred when trying to getAll() status from database.");
         }
-
-        return roleList;
+        System.out.println(statusList);
+        return statusList;
     }
 }

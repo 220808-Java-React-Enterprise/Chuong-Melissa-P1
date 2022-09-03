@@ -7,7 +7,7 @@ import com.revature.reimburstment.models.ReimburstmentType;
 import com.revature.reimburstment.models.UserRole;
 import com.revature.reimburstment.services.ReimburstmentTypeService;
 import com.revature.reimburstment.services.TokenService;
-import com.revature.reimburstment.services.UserRoleService;
+import com.revature.reimburstment.services.RoleService;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.ResourceConflictException;
 
@@ -24,11 +24,11 @@ public class ReimburstmentTypeServlet extends HttpServlet {
     private final TokenService tokenService;
     private final ReimburstmentTypeService reimburstmentTypeService;
 
-    private final UserRoleService userRoleService;
+    private final RoleService userRoleService;
 
     public ReimburstmentTypeServlet(ObjectMapper mapper, TokenService tokenService,
                                     ReimburstmentTypeService reimburstmentTypeService,
-                                    UserRoleService userRoleService) {
+                                    RoleService userRoleService) {
         this.mapper = mapper;
         this.reimburstmentTypeService = reimburstmentTypeService;
         this.tokenService = tokenService;
@@ -38,11 +38,17 @@ public class ReimburstmentTypeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
-            ReimburstmentType reimbustmentType = reimburstmentTypeService.saveReimburstType(request);
-            resp.setContentType("application/json");
-            resp.setStatus(200);
-            resp.getWriter().write(mapper.writeValueAsString("Type : " + request.getType()));
+            String role = getRole(req, resp);
+            if(role.equals("ADMIN")) {
+                ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
+                ReimburstmentType reimbustmentType = reimburstmentTypeService.saveReimburstType(request);
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("Type : " + request.getType()));
+            }else {
+                resp.setStatus(409);
+                resp.getWriter().write(mapper.writeValueAsString("Role : " + role));
+            }
 
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
@@ -101,11 +107,15 @@ public class ReimburstmentTypeServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
-            reimburstmentTypeService.update(request);
-            resp.setContentType("application/json");
-            resp.setStatus(200);
-            resp.getWriter().write(mapper.writeValueAsString("Updated " + request.getType_id()));
+
+            String role = getRole(req, resp);
+            if(role.equals("ADMIN")) {
+                ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
+                reimburstmentTypeService.update(request);
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("Updated " + request.getType_id()));
+            }
 
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
@@ -120,11 +130,14 @@ public class ReimburstmentTypeServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
-            reimburstmentTypeService.delete(request.getType());
-            resp.setContentType("application/json");
-            resp.setStatus(200);
-            resp.getWriter().write(mapper.writeValueAsString("Deleted " + request.getType()));
+            String role = getRole(req, resp);
+            if(role.equals("ADMIN")) {
+                ReimburstmentTypeRequest request = mapper.readValue(req.getInputStream(), ReimburstmentTypeRequest.class);
+                reimburstmentTypeService.delete(request.getType());
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("Deleted " + request.getType()));
+            }
 
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
