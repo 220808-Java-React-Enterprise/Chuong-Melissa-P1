@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class AuthServlet extends HttpServlet {
@@ -32,40 +33,25 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         try {
             LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
             Principal principal = userService.login(request);
             String token = tokenService.generateToken(principal);
 
+            HttpSession session = req.getSession(true);
+            session.setAttribute("token", token);
+
             resp.setStatus(200);
             resp.setHeader("Authoriztion", token);
             resp.setContentType("application/json");
-            resp.getWriter().write(mapper.writeValueAsString(principal));
+            resp.getWriter().write(mapper.writeValueAsString("Welcome " + principal.getUsername()));
+
         }catch(InvalidRequestException e) {
             resp.setStatus(404);
         }catch (AuthenticationException e) {
+            resp.getWriter().write(mapper.writeValueAsString("Welcome " + e.getMessage()));
             resp.setStatus(401);
         }
-
-//        LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
-//        resp.setContentType("application/json");
-//        resp.getWriter().write(mapper.writeValueAsString(request.getUsername() + " : " + request.getPassword()));
-
-//        try {
-//            LoginRequest request = mapper.readValue(req.getInputStream(), LoginRequest.class);
-//            Principal principal = userService.login(request);
-//
-//            String token = tokenService.generateToken(principal);
-//
-//            resp.setStatus(200);
-//            resp.setHeader("Authorization", token);
-//            resp.setContentType("application/json");
-//            resp.getWriter().write(mapper.writeValueAsString(principal));
-//
-//        } catch (InvalidRequestException e) {
-//            resp.setStatus(404); // BAD REQUEST
-//        } catch (AuthenticationException e) {
-//            resp.setStatus(401); // INVALID CRED
-//        }
     }
 }

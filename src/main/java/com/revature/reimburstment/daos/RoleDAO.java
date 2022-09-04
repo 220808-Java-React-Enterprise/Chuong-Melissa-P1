@@ -1,5 +1,6 @@
 package com.revature.reimburstment.daos;
 
+import com.revature.reimburstment.models.User;
 import com.revature.reimburstment.models.UserRole;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidSQLException;
 import com.revature.reimburstment.utils.database.ConnectionFactory;
@@ -46,7 +47,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from ers_user_roles where role = ?");
+                    con.prepareStatement("delete from ers_user_roles where role_id = ?");
             ps.setString(1, id);
 
             ps.executeUpdate();
@@ -91,5 +92,22 @@ public class RoleDAO implements CrudDAO<UserRole> {
         }
         System.out.println(roleList);
         return roleList;
+    }
+
+    public UserRole getByRole(String role) {
+        UserRole userRole = null;
+
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("select * from ers_user_roles where role = ?");
+            ps.setString(1, role);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                userRole = new UserRole(rs.getString("role_id"), rs.getString("role"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when trying to getAll() roles from database.");
+        }
+        return userRole;
     }
 }

@@ -24,7 +24,6 @@ public class ConnectionFactory {
     private ConnectionFactory() {
 
         String userDir = System.getProperty("user.dir");
-        System.out.println("\n\n===================================== " + userDir + " =================================\n\n");
         try {
             FileReader reader = new FileReader(userDir + "/db.properties");
             props.load(reader);

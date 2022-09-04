@@ -35,8 +35,8 @@ public class UserService {
                         user.setPassword(request.getPassword1());
                         user.setGiven_name(request.getGiven_name());
                         user.setSurname(request.getSurname());
-                        user.setIs_active(false);
-                        user.setRole_id("role2");
+                        user.setIs_active(request.getIs_active());
+                        user.setRole_id(request.getRole_id());
                         userDAO.save(user);
                     }
                 }
@@ -53,6 +53,7 @@ public class UserService {
     public Principal login(LoginRequest request) {
         User user = userDAO.getUserByUsernameAndPassword(request.getUsername(), request.getPassword());
         if (user == null) throw new AuthenticationException("\nIncorrect username or password :(");
+        if (!user.is_active()) throw new AuthenticationException("Account is not active");
         return new Principal(user.getUser_id(), user.getUsername(), user.getRole_id());
     }
 
@@ -78,5 +79,13 @@ public class UserService {
     public boolean isSamePassword(String password, String password2) {
         if (!password.equals(password2)) throw new InvalidRequestException("\nPassword do not match :(");
         return true;
+    }
+
+    public void update(User user) {
+        userDAO.update(user);
+    }
+
+    public void delete(String user_id) {
+        userDAO.delete(user_id);
     }
 }

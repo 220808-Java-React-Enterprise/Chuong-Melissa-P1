@@ -32,6 +32,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
 
     @Override
     public void update(ReimburstmentStatus obj) {
+        System.out.println(obj);
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("update ers_reimbursement_statuses set status = ? where status_id = ?");

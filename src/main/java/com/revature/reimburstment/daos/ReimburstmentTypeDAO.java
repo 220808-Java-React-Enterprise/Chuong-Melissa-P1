@@ -52,7 +52,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     public void delete(String id) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from ers_reimbursement_types where type = ?");
+                    con.prepareStatement("delete from ers_reimbursement_types where type_id = ?");
             ps.setString(1, id);
 
             ps.executeUpdate();
@@ -63,12 +63,35 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
 
     @Override
     public ReimburstmentType getById(String id) {
+        ReimburstmentType reimburstmentType = new ReimburstmentType();
         try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = conn.prepareStatement("select * from ers_reimbursement_types where type_id = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                reimburstmentType.setType_id(rs.getString("type_id"));
+                reimburstmentType.setType(rs.getString("type"));
+            }
+            return reimburstmentType;
         }catch(SQLException e) {
             throw new InvalidTypeException("Invalid Reimburstment Type ID");
         }
-        return null;
+    }
+
+    public ReimburstmentType getByType(String type) {
+        ReimburstmentType reimburstmentType = new ReimburstmentType();
+        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from ers_reimbursement_types where type = ?");
+            ps.setString(1, type);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                reimburstmentType.setType_id(rs.getString("type_id"));
+                reimburstmentType.setType(rs.getString("type"));
+            }
+            return reimburstmentType;
+        }catch(SQLException e) {
+            throw new InvalidTypeException("Invalid Reimburstment Type ID");
+        }
     }
 
     @Override

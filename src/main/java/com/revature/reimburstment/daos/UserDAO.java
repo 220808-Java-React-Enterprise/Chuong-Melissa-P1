@@ -20,10 +20,10 @@ public class UserDAO implements CrudDAO<User> {
 
     @Override
     public void save(User obj) {
-        System.out.println("===========================" + obj + "================================================");
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("INSERT INTO ers_users (user_id, username, email, password, given_name, surname, is_active, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    con.prepareStatement(
+"INSERT INTO ers_users (user_id, username, email, password, given_name, surname, is_active, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getUser_id());
             ps.setString(2, obj.getUsername());
             ps.setString(3, obj.getEmail());
@@ -40,12 +40,31 @@ public class UserDAO implements CrudDAO<User> {
 
     @Override
     public void update(User obj) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps =
+                    con.prepareStatement(
+                            "update ers_users set is_active = ?, role_id = ? where user_id = ?;");
+            ps.setBoolean(1, obj.is_active());
+            ps.setString(2, obj.getRole_id());
+            ps.setString(3, obj.getUser_id());
 
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
     }
 
     @Override
     public void delete(String id) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps =
+                    con.prepareStatement("delete from  ers_users where user_id = ?;");
+            ps.setString(1, id);
 
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
     }
 
     @Override
@@ -109,6 +128,7 @@ public class UserDAO implements CrudDAO<User> {
     }
 
     public User getUserByUsernameAndPassword(String username, String password) {
+        User user = null;
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("select * from ers_users where username = ? and password = ?");
             ps.setString(1, username);
@@ -119,7 +139,13 @@ public class UserDAO implements CrudDAO<User> {
                 String user_id = rs.getString("user_id");
                 String usernameTemp = rs.getString("username");
                 String role_id = rs.getString("role_id");
-                return new User(user_id, usernameTemp, role_id );
+                boolean is_active = rs.getBoolean("is_active");
+                user = new User();
+                user.setUser_id(user_id);
+                user.setUsername(usernameTemp);
+                user.setRole_id(role_id);
+                user.setIs_active(is_active);
+                return user;
             }
         } catch (SQLException e) {
             throw
@@ -130,5 +156,26 @@ public class UserDAO implements CrudDAO<User> {
         }
 
         return null;
+    }
+
+    public User getUserByRoleId(String role_id) {
+        System.out.println("Role id: " + role_id);
+        User user = null;
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("select * from ers_users where role_id = ?");
+            ps.setString(1, role_id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+                user.setUser_id(rs.getString("user_id"));
+            }
+        } catch (SQLException e) {
+            throw
+                    new InvalidSQLException(
+                            "An error occurred when tyring to getByRoleId()");
+        }
+
+        return user;
     }
 }

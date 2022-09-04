@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,14 +41,15 @@ public class ReimburstStatusServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String role = getRole(req, resp);
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
             if (role.equals("ADMIN")) {
                 ReimburstmentStatusRequest request =
                         mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
                 ReimburstmentStatus reimburstStatus = reimburstStatusService.saveReimburstmentStatus(request);
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString(reimburstStatus.getStastus_id()));
+                resp.getWriter().write(mapper.writeValueAsString(reimburstStatus));
             } else {
                 resp.setContentType("application/json");
                 resp.getWriter().write(mapper.writeValueAsString(role));
@@ -66,7 +68,8 @@ public class ReimburstStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String role = getRole(req, resp);
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
             if (role.equals("ADMIN")) {
                 List<ReimburstmentStatus> statusList = reimburstStatusService.getAll();
                 resp.setContentType("application/json");
@@ -97,16 +100,29 @@ public class ReimburstStatusServlet extends HttpServlet {
         return null;
     }
 
+    private String getRoleWithSession(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String token = (String) session.getAttribute("token");
+        Principal principal = tokenService.extractRequesterDetails(token);
+        String roleId = principal.getRole_id();
+        UserRole userRole = userRoleService.getById(roleId);
+        String role = userRole.getRole();
+
+        return role;
+    }
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String role = getRole(req, resp);
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
             if (role.equals("ADMIN")) {
                 ReimburstmentStatusRequest request = mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
+                System.out.println("doPut ReimburstmentStatusRequest " + request);
                 this.reimburstStatusService.update(request);
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("Updated " + request.getStatus_id()));
+                resp.getWriter().write(mapper.writeValueAsString("Updated status" + request.getStatus_id()));
             }
 
         } catch (InvalidRequestException e) {
@@ -122,13 +138,14 @@ public class ReimburstStatusServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String role = getRole(req, resp);
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
             if (role.equals("ADMIN")) {
                 ReimburstmentStatusRequest request = mapper.readValue(req.getInputStream(), ReimburstmentStatusRequest.class);
                 reimburstStatusService.delete(request.getStatus_id());
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("Deleted " + request.getStatus()));
+                resp.getWriter().write(mapper.writeValueAsString("Deleted STATUS" ));
             }
 
         } catch (InvalidRequestException e) {

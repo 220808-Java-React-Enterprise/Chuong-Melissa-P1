@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class UserServlet extends HttpServlet  {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String role = getRole(req, resp);
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
             if (role.equals("ADMIN")) {
                 List<User> userList = userService.getAllUsers();
                 resp.setContentType("application/json");
@@ -52,6 +54,18 @@ public class UserServlet extends HttpServlet  {
     }
 
     // only ADMIN and FINANCE users are allowed to administer the system
+    private String getRoleWithSession(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String token = (String) session.getAttribute("token");
+        Principal principal = tokenService.extractRequesterDetails(token);
+        String roleId = principal.getRole_id();
+        UserRole userRole = userRoleService.getById(roleId);
+        String role = userRole.getRole();
+
+        return role;
+    }
+
+    // only ADMIN and FINANCE users are allowed to administer the system
     private String getRole(HttpServletRequest req, HttpServletResponse resp) {
         try {
             String token = req.getHeader("Authorization");
@@ -61,43 +75,88 @@ public class UserServlet extends HttpServlet  {
 
             return userRole.getRole();
         }catch (NullPointerException e) {
-
+            throw new InvalidRequestException("Invalid Credential");
         }catch (Exception e) {
-
+            throw new InvalidRequestException("Invalid Credential");
         }
-        return null;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            NewUserRequest request = mapper.readValue(req.getInputStream(), NewUserRequest.class);
-            User createdUser = userService.register(request);
-            resp.setContentType("application/json");
-            resp.setStatus(200);
-            resp.getWriter().write(mapper.writeValueAsString(createdUser.getUser_id()));
-
-        } catch (InvalidRequestException e) {
-            resp.setStatus(404);
-            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
-        } catch (ResourceConflictException e) {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("ADMIN")) {
+                NewUserRequest request = mapper.readValue(req.getInputStream(), NewUserRequest.class);
+                User createdUser = userService.register(request);
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("User added"));
+            } else {
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            }
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
             resp.setStatus(409);
-        } catch (Exception e) {
+        } catch(Exception e){
             resp.setStatus(404);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> userList = userService.getAllUsers();
-        resp.setContentType("application/json");
-        resp.getWriter().write(mapper.writeValueAsString(userList));
+        System.out.println("in doPut");
+        try {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("ADMIN")) {
+                System.out.println("inside admin");
+                User request = mapper.readValue(req.getInputStream(), User.class);
+                System.out.println("user id: " + request.getUser_id());
+                userService.update(request);
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("User updated"));
+            } else {
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            }
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+        } catch(Exception e){
+            resp.setStatus(404);
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> userList = userService.getAllUsers();
-        resp.setContentType("application/json");
-        resp.getWriter().write(mapper.writeValueAsString(userList));
+
+        try {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("ADMIN")) {
+                User request = mapper.readValue(req.getInputStream(), User.class);
+                userService.delete(request.getUser_id());
+                resp.setContentType("application/json");
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("User updated"));
+            } else {
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            }
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+        } catch(Exception e){
+            resp.setStatus(404);
+        }
     }
 }
