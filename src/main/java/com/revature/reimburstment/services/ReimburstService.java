@@ -1,15 +1,15 @@
 package com.revature.reimburstment.services;
 
-import com.revature.reimburstment.daos.ReimburstDAO;
-import com.revature.reimburstment.daos.ReimburstmentTypeDAO;
-import com.revature.reimburstment.daos.RoleDAO;
-import com.revature.reimburstment.daos.UserDAO;
+import com.revature.reimburstment.daos.*;
 import com.revature.reimburstment.dtos.requests.ReimburstRequest;
+import com.revature.reimburstment.dtos.requests.ReimburstmentFullRequest;
 import com.revature.reimburstment.models.*;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ReimburstService {
@@ -22,11 +22,31 @@ public class ReimburstService {
 
     private final UserDAO userDAO;
 
+    private final ReimburstStatusDAO reimburstStatusDAO;
+
+
     public ReimburstService(ReimburstDAO reimburstDAO, ReimburstmentTypeDAO reimburstmentTypeDAO) {
         this.reimburstDAO = reimburstDAO;
         this.reimburstmentTypeDAO = reimburstmentTypeDAO;
         roleDAO = new RoleDAO();
         userDAO = new UserDAO();
+        reimburstStatusDAO = new ReimburstStatusDAO();
+
+    }
+
+    public List<ReimburstmentFullRequest> getAllReimburstForRequest() {
+        List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest();
+        System.out.println("\n" + list + "\n");
+
+        return list;
+    }
+
+    public void update(ReimburstRequest request) {
+        Reimburstment reimburstment = new Reimburstment();
+        reimburstment.setReimb_id(request.getReimb_id());
+        reimburstment.setPayment_id(request.getPayment_id());
+        reimburstment.setStatus_id(request.getStatus_id());
+        reimburstDAO.update(reimburstment);
     }
 
 

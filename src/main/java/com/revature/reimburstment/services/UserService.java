@@ -62,22 +62,22 @@ public class UserService {
     }
 
     public boolean isValidUsername(String username) {
-        if (!username.matches("^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$")) throw new InvalidRequestException("\nInvalid username! username is 8-20 characters long. no _ or . at the beginning. no __ or _. or ._ or .. inside");
+        if (!username.matches("^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$")) throw new InvalidRequestException("Invalid username! username is 8-20 characters long. no _ or . at the beginning. no __ or _. or ._ or .. inside");
         return true;
     }
 
     public boolean isValidPassword(String password) {
-        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) throw new InvalidRequestException("\nInvalid password! Minimum eight characters, at least one letter and one number");
+        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) throw new InvalidRequestException("Invalid password! Minimum eight characters, at least one letter and one number");
         return true;
     }
 
     public boolean isDuplicateUsername(String username) {
-        if (userDAO.getUsername(username) != null) throw new ResourceConflictException("\nSorry, " + username + " already been taken :(");
+        if (userDAO.getUsername(username) != null) throw new ResourceConflictException("Sorry, " + username + " already been taken :(");
         return false;
     }
 
     public boolean isSamePassword(String password, String password2) {
-        if (!password.equals(password2)) throw new InvalidRequestException("\nPassword do not match :(");
+        if (!password.equals(password2)) throw new InvalidRequestException("Password do not match :(");
         return true;
     }
 

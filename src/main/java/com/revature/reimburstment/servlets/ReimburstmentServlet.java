@@ -1,9 +1,11 @@
 package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.reimburstment.daos.ReimburstDAO;
 import com.revature.reimburstment.daos.RoleDAO;
 import com.revature.reimburstment.dtos.requests.NewUserRequest;
 import com.revature.reimburstment.dtos.requests.ReimburstRequest;
+import com.revature.reimburstment.dtos.requests.ReimburstmentFullRequest;
 import com.revature.reimburstment.dtos.responses.Principal;
 import com.revature.reimburstment.models.Reimburstment;
 import com.revature.reimburstment.models.User;
@@ -63,8 +65,73 @@ public class ReimburstmentServlet extends HttpServlet {
     }
 
     @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        String role = getRoleWithSession(req);
+//        resp.setStatus(200);
+//        resp.getWriter().write(mapper.writeValueAsString("Welcome to doPut() Reim: " + role));
+        try
+        {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("FINANCE"))
+            {
+                ReimburstRequest request = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
+                reimburstService.update(request);
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString("Updated Reimburstment " + request.getReimb_id()));
+            }
+
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+        } catch(Exception e){
+            resp.setStatus(404);
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        }
+    }
+
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write(mapper.writeValueAsString("got to doGet()"));
+//        String role = getRoleWithSession(req);
+//        resp.setStatus(200);
+//        resp.getWriter().write(mapper.writeValueAsString("Welcome to getAll Reim: " + role));
+        try
+        {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("FINANCE"))
+            {
+                List<ReimburstmentFullRequest> reimList = reimburstService.getAllReimburstForRequest();
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(reimList));
+            }
+
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+        } catch(Exception e){
+            resp.setStatus(404);
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        }
+    }
+
+    private Principal getPricipal(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String token = req.getHeader("Authorization");
+            Principal principal = tokenService.extractRequesterDetails(token);
+            return principal;
+        }catch (NullPointerException e) {
+
+        }catch (Exception e) {
+
+        }
+        return null;
     }
 
     private String getUserId(HttpServletRequest req, HttpServletResponse resp) {
@@ -93,22 +160,50 @@ public class ReimburstmentServlet extends HttpServlet {
         return role;
     }
 
+    // only ADMIN and FINANCE users are allowed to administer the system
+    private String getRole(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String token = req.getHeader("Authorization");
+            Principal principal = tokenService.extractRequesterDetails(token);
+            String roleId = principal.getRole_id();
+            UserRole userRole = roleService.getById(roleId);
+
+            return userRole.getRole();
+        }catch (NullPointerException e) {
+            throw new InvalidRequestException("Invalid Credential");
+        }catch (Exception e) {
+            throw new InvalidRequestException("Invalid Credential");
+        }
+    }
+
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("inside do post");
-        ReimburstRequest reimburstRequest = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
 
-        String userId = getUserId(req, resp);
-
-        reimburstRequest.setAuthor_id(userId);
-        System.out.println("user that login id: " + reimburstRequest.getAuthor_id());
-
-        Reimburstment reimburstment = reimburstService.createReimburst(reimburstRequest);
-
-        System.out.println(reimburstRequest.getDescription());
-        resp.setContentType("application/text");
-        resp.getWriter().write(mapper.writeValueAsString(reimburstment));
+        try {
+            //String role = getRole(req, resp);
+            String role = getRoleWithSession(req);
+            if (role.equals("ADMIN") || role.equals("EMPLOYEE") || role.equals("FINANCE")) {
+                ReimburstRequest reimburstRequest = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
+                String userId = getUserId(req, resp);
+                reimburstRequest.setAuthor_id(userId);
+                Reimburstment reimburstment = reimburstService.createReimburst(reimburstRequest);
+                System.out.println(reimburstRequest.getDescription());
+                resp.setContentType("application/text");
+                resp.getWriter().write(mapper.writeValueAsString(reimburstment));
+            } else {
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            }
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+        } catch(Exception e){
+            resp.setStatus(404);
+        }
 
 //        String appPath = req.getServletContext().getRealPath("");
 //        System.out.println(appPath);

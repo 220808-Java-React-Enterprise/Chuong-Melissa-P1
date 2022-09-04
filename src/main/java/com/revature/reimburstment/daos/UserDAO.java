@@ -58,8 +58,9 @@ public class UserDAO implements CrudDAO<User> {
     public void delete(String id) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from  ers_users where user_id = ?;");
-            ps.setString(1, id);
+                    con.prepareStatement("update ers_users set is_active = ? where user_id = ? ;");
+            ps.setBoolean(1, false);
+            ps.setString(2, id);
 
             ps.executeUpdate();
         } catch (SQLException e) {

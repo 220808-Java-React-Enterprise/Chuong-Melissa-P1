@@ -28,7 +28,10 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        HttpSession session = req.getSession();
+        session.invalidate();
+        resp.setContentType("application/json");
+        resp.getWriter().write(mapper.writeValueAsString("You logged out"));
     }
 
     @Override

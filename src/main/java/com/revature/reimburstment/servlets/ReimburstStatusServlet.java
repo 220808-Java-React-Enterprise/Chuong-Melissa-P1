@@ -70,7 +70,7 @@ public class ReimburstStatusServlet extends HttpServlet {
         try {
             //String role = getRole(req, resp);
             String role = getRoleWithSession(req);
-            if (role.equals("ADMIN")) {
+            if (role.equals("ADMIN") || role.equals("FINANCE")) {
                 List<ReimburstmentStatus> statusList = reimburstStatusService.getAll();
                 resp.setContentType("application/json");
                 resp.getWriter().write(mapper.writeValueAsString(statusList));

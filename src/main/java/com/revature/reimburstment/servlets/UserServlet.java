@@ -46,10 +46,12 @@ public class UserServlet extends HttpServlet  {
                 resp.getWriter().write(mapper.writeValueAsString(userList));
             } else {
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(role));
+                resp.setStatus(403);
+                resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
             }
         }catch(NullPointerException e) {
             resp.setStatus(401);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 
@@ -98,11 +100,13 @@ public class UserServlet extends HttpServlet  {
             }
         } catch(InvalidRequestException e){
             resp.setStatus(403);
-            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(ResourceConflictException e){
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(Exception e){
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 
@@ -145,18 +149,20 @@ public class UserServlet extends HttpServlet  {
                 userService.delete(request.getUser_id());
                 resp.setContentType("application/json");
                 resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("User updated"));
+                resp.getWriter().write(mapper.writeValueAsString("User deleted"));
             } else {
                 resp.setStatus(403);
                 resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
             }
         } catch(InvalidRequestException e){
             resp.setStatus(403);
-            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(ResourceConflictException e){
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(Exception e){
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 }

@@ -49,7 +49,6 @@ public class ConnectionFactory {
 
         if (conn == null) throw new RuntimeException("Could not establish connection with the database!");
 
-        System.out.println("Connection successfully");
         return conn;
     }
 }
