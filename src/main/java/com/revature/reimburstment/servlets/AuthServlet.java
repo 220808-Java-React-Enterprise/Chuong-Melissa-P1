@@ -52,9 +52,10 @@ public class AuthServlet extends HttpServlet {
 
         }catch(InvalidRequestException e) {
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }catch (AuthenticationException e) {
-            resp.getWriter().write(mapper.writeValueAsString("Welcome " + e.getMessage()));
             resp.setStatus(401);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 }

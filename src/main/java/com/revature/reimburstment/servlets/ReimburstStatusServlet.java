@@ -60,8 +60,10 @@ public class ReimburstStatusServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (Exception e) {
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 
@@ -80,6 +82,7 @@ public class ReimburstStatusServlet extends HttpServlet {
             }
         }catch(NullPointerException e) {
             resp.setStatus(401);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 
@@ -130,8 +133,10 @@ public class ReimburstStatusServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (Exception e) {
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 
@@ -153,8 +158,10 @@ public class ReimburstStatusServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (Exception e) {
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 }

@@ -54,10 +54,9 @@ public class ReimburstService {
         Reimburstment reimburstment = new Reimburstment();
         ReimburstmentType type = reimburstmentTypeDAO.getByType(request.getType());
         UserRole userRole = roleDAO.getByRole("FINANCE");
-        System.out.println("createReimburst() " + userRole);
-        System.out.println("createReimburst() role: " + userRole.getRole());
+
         User resolver = userDAO.getUserByRoleId(userRole.getRole_id());
-        System.out.println("createReimburst() resolver: " + resolver);
+
         ReimburstmentStatus reimburstmentStatus = reimburstDAO.getByStatus("PENDING");
 
         reimburstment.setReimb_id(UUID.randomUUID().toString());

@@ -130,11 +130,13 @@ public class UserServlet extends HttpServlet  {
             }
         } catch(InvalidRequestException e){
             resp.setStatus(403);
-            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(ResourceConflictException e){
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(Exception e){
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
 

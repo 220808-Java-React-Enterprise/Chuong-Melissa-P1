@@ -201,8 +201,10 @@ public class ReimburstmentServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
         } catch(ResourceConflictException e){
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(Exception e){
             resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
 
 //        String appPath = req.getServletContext().getRealPath("");
