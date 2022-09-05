@@ -15,7 +15,7 @@ public class Reimburstment {
 
     private String description;
 
-    private InputStream receipt;
+    private byte[] receipt;
 
     private String payment_id;
 
@@ -71,11 +71,11 @@ public class Reimburstment {
         this.description = description;
     }
 
-    public InputStream getReceipt() {
+    public byte[] getReceipt() {
         return receipt;
     }
 
-    public void setReceipt(InputStream receipt) {
+    public void setReceipt(byte[] receipt) {
         this.receipt = receipt;
     }
 

@@ -9,6 +9,8 @@ import java.util.Date;
 public class ReimburstRequest {
 
     private String reimb_id;
+
+    private String search;
     private BigDecimal amount;
 
     private LocalDateTime submitted;
@@ -16,6 +18,8 @@ public class ReimburstRequest {
     private String resolved;
 
     private String description;
+
+    private byte[] receipt;
 
     private String payment_id;
 
@@ -31,6 +35,22 @@ public class ReimburstRequest {
 
     public ReimburstRequest() {
 
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public byte[] getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(byte[] receipt) {
+        this.receipt = receipt;
     }
 
     public String getReimb_id() {

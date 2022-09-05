@@ -40,7 +40,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
             ps.setString(2, obj.getStastus_id());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.update()");
+            throw new InvalidSQLException("An error occurred at ReimburstStatusDAO.update() " + e.getMessage());
         }
     }
 
@@ -54,27 +54,45 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete()");
+            throw new InvalidSQLException("An error occurred at ReimburstStatusDAO.delete() " + e.getMessage());
         }
     }
 
     @Override
     public ReimburstmentStatus getById(String id) {
-        ReimburstmentStatus userRole = new ReimburstmentStatus();
+        ReimburstmentStatus reimStatus = new ReimburstmentStatus();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("select * from ers_user_roles where role_id = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                userRole.setStastus_id(rs.getString("status_id"));
-                userRole.setStatus(rs.getString("status"));
+                reimStatus.setStastus_id(rs.getString("status_id"));
+                reimStatus.setStatus(rs.getString("status"));
             }
 
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete()");
+            throw new InvalidSQLException("An error occurred at ReimburstStatusDAO.getById() " + e.getMessage());
         }
-        return userRole;
+        return reimStatus;
+    }
+
+    public ReimburstmentStatus getByStatus(String status) {
+        ReimburstmentStatus reimStatus = new ReimburstmentStatus();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps =
+                    con.prepareStatement("select * from ers_reimbursement_statuses where status = ?");
+            ps.setString(1, status);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                reimStatus.setStastus_id(rs.getString("status_id"));
+                reimStatus.setStatus(rs.getString("status"));
+            }
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred at ReimburstStatusDAO.getByStatus() " + e.getMessage());
+        }
+        return reimStatus;
     }
 
     @Override
@@ -91,7 +109,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
                 statusList.add(reimburstStatus);
             }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when trying to getAll() status from database.");
+            throw new InvalidSQLException("An error occurred when trying to ReimburstStatusDAO() status from database.");
         }
         System.out.println(statusList);
         return statusList;

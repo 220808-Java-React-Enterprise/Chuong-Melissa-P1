@@ -11,7 +11,7 @@ public class ReimburstmentFullRequest {
 
     private BigDecimal amount;
 
-    private Date submitted;
+    private String submitted;
 
     private String description;
 
@@ -49,11 +49,11 @@ public class ReimburstmentFullRequest {
         this.amount = amount;
     }
 
-    public Date getSubmitted() {
+    public String getSubmitted() {
         return submitted;
     }
 
-    public void setSubmitted(Date submitted) {
+    public void setSubmitted(String submitted) {
         this.submitted = submitted;
     }
 

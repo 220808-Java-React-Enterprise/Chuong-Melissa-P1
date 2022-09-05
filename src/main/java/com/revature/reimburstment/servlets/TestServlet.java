@@ -2,18 +2,20 @@ package com.revature.reimburstment.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.reimburstment.daos.TestingDAO;
-import com.revature.reimburstment.dtos.requests.ReimburstRequest;
+
 import com.revature.reimburstment.models.Testing;
-import com.revature.reimburstment.models.User;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -47,7 +49,7 @@ public class TestServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-        InputStream inputStream = null;
+        InputStream is = null;
         Testing t = null;
         try {
             List<FileItem> multifiles = sf.parseRequest(req);
@@ -55,7 +57,7 @@ public class TestServlet extends HttpServlet {
                 String itemFileName = item.getName();
                 if(itemFileName != null) {
                     System.out.println("filename : " + itemFileName);
-                    inputStream = item.getInputStream();
+                    is = item.getInputStream();
                 } else {
                     t = mapper.readValue(item.getInputStream(), Testing.class);
                     System.out.println("amount: " + t.getAmount());
@@ -65,7 +67,11 @@ public class TestServlet extends HttpServlet {
             }
 
             // testing
-            t.setInputStream(inputStream);
+
+            byte[] bytes = IOUtils.toByteArray(is);
+
+            t.setInputStream(bytes);
+
             new TestingDAO().save(t);
 
 

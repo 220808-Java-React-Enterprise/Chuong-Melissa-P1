@@ -9,7 +9,7 @@ public class Testing {
 
     private String description;
 
-    private InputStream inputStream;
+    private byte[] inputStream;
 
     private String type;
 
@@ -29,11 +29,11 @@ public class Testing {
         this.description = description;
     }
 
-    public InputStream getInputStream() {
+    public byte[] getInputStream() {
         return inputStream;
     }
 
-    public void setInputStream(InputStream inputStream) {
+    public void setInputStream(byte[] inputStream) {
         this.inputStream = inputStream;
     }
 
@@ -43,5 +43,15 @@ public class Testing {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Testing{" +
+                "amount=" + amount +
+                ", description='" + description + '\'' +
+                ", inputStream=" + inputStream +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

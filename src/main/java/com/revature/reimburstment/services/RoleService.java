@@ -40,6 +40,10 @@ public class RoleService {
         return userRoleDAO.getById(id);
     }
 
+    public UserRole getByRole(String role) {
+        return userRoleDAO.getByRole(role);
+    }
+
 
     public List<UserRole> getAll() {
         return userRoleDAO.getAll();

@@ -24,7 +24,7 @@ public class TestingDAO implements CrudDAO <Testing>{
             ps.setString(1, UUID.randomUUID().toString());
             ps.setBigDecimal(2, obj.getAmount());
             ps.setString(3, obj.getDescription());
-            ps.setBinaryStream(4, obj.getInputStream());
+            ps.setBytes(4, obj.getInputStream());
             ps.setString(5, "123");
             ps.setString(6, "123");
             ps.setString(7, "123");

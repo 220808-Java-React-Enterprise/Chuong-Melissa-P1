@@ -36,7 +36,12 @@ public class ReimburstService {
 
     public List<ReimburstmentFullRequest> getAllReimburstForRequest() {
         List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest();
-        System.out.println("\n" + list + "\n");
+
+        return list;
+    }
+
+    public List<ReimburstmentFullRequest> getAllReimburstForRequest(String searchType, String searchStatus) {
+        List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest(searchType, searchStatus);
 
         return list;
     }
@@ -45,7 +50,10 @@ public class ReimburstService {
         Reimburstment reimburstment = new Reimburstment();
         reimburstment.setReimb_id(request.getReimb_id());
         reimburstment.setPayment_id(request.getPayment_id());
-        reimburstment.setStatus_id(request.getStatus_id());
+
+        ReimburstmentStatus reimburstmentStatus = this.reimburstStatusDAO.getByStatus(request.getStatus());
+
+        reimburstment.setStatus_id(reimburstmentStatus.getStastus_id());
         reimburstDAO.update(reimburstment);
     }
 
@@ -62,10 +70,13 @@ public class ReimburstService {
         reimburstment.setReimb_id(UUID.randomUUID().toString());
         reimburstment.setAmount(request.getAmount());
         reimburstment.setSubmitted(Timestamp.valueOf(LocalDateTime.now()));
+        reimburstment.setResolved(null);
         reimburstment.setDescription(request.getDescription());
-        reimburstment.setPayment_id(UUID.randomUUID().toString());
+        reimburstment.setReceipt(request.getReceipt());
+        reimburstment.setPayment_id(null);
         reimburstment.setAuthor_id(request.getAuthor_id());
-        reimburstment.setResolver_id(resolver.getUser_id());
+
+        reimburstment.setResolver_id(null);
         reimburstment.setStatus_id(reimburstmentStatus.getStastus_id());
         reimburstment.setType_id(type.getType_id());
 
@@ -76,6 +87,11 @@ public class ReimburstService {
         return reimburstment;
     }
 
+    public void initializeResolver(String userId, ReimburstmentStatus status) {
+        reimburstDAO.initializeResolver(userId, status);
+    }
 
-
+    public void getByStatus(String status) {
+        reimburstDAO.getByStatus(status);
+    }
 }
