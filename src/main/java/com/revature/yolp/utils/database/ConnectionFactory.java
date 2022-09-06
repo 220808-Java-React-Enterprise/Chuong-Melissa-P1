@@ -26,14 +26,14 @@ public class ConnectionFactory {
     private final Properties props = new Properties();
 
     private ConnectionFactory() {
-        try {
-            //D:\apache-tomcat-9.0.5\apache-tomcat-9.0.5\webapps\reimburstment\WEB-INF\classes
-            FileReader reader = new FileReader("webapps/reimburstment/WEB-INF/classes/db.properties");
-            props.load(reader);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //D:\apache-tomcat-9.0.5\apache-tomcat-9.0.5\webapps\reimburstment\WEB-INF\classes
+//            FileReader reader = new FileReader("webapps/reimburstment/WEB-INF/classes/db.properties");
+//            props.load(reader);
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static ConnectionFactory getInstance() {
@@ -43,7 +43,12 @@ public class ConnectionFactory {
 
     public Connection getConnection() throws SQLException {
 
-        Connection conn = DriverManager.getConnection(props.getProperty("url"), props.getProperty("username"), props.getProperty("password"));
+        String url = "jdbc:postgresql://revature.cbfjslydmnoj.us-west-1.rds.amazonaws.com:5432/postgres?currentSchema=reimbursement";
+        String username = "postgres";
+        String password = "revature";
+
+        Connection conn = DriverManager.getConnection(url, username, password);
+        //Connection conn = DriverManager.getConnection(props.getProperty("url"), props.getProperty("username"), props.getProperty("password"));
 
         if (conn == null) throw new RuntimeException("Could not establish connection with the database!");
 
