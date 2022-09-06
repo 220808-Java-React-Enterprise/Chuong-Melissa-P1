@@ -22,7 +22,6 @@ import java.util.List;
 public class UserServlet extends HttpServlet  {
 
     private final ObjectMapper mapper;
-
     private TokenService tokenService;
     private final UserService userService;
 

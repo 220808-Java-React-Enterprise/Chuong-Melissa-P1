@@ -68,9 +68,7 @@ public class ReimburstmentServlet extends HttpServlet {
 
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        String role = getRoleWithSession(req);
-//        resp.setStatus(200);
-//        resp.getWriter().write(mapper.writeValueAsString("Welcome to doPut() Reim: " + role));
+
         try
         {
             //String role = getRole(req, resp);
@@ -112,11 +110,10 @@ public class ReimburstmentServlet extends HttpServlet {
                 reimburstService.initializeResolver(userId, reimburstmentStatus);
 
                 List<ReimburstmentFullRequest> reimList = null;
-                String searchType = request.getSearch().toUpperCase();
-                String searchStatus = request.getStatus().toUpperCase();
+                String searchType = request.getSearchType().toUpperCase();
 
-                if(!searchType.equals("ALL") && !searchStatus.equals("ALL")) {
-                    reimList = reimburstService.getAllReimburstForRequest(searchType, searchStatus);
+                if(!searchType.equals("ALL")) {
+                    reimList = reimburstService.getAllReimburstForRequest(searchType);
                 }else {
                     reimList = reimburstService.getAllReimburstForRequest();
                 }

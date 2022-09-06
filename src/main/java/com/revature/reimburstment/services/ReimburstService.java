@@ -40,8 +40,8 @@ public class ReimburstService {
         return list;
     }
 
-    public List<ReimburstmentFullRequest> getAllReimburstForRequest(String searchType, String searchStatus) {
-        List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest(searchType, searchStatus);
+    public List<ReimburstmentFullRequest> getAllReimburstForRequest(String searchType) {
+        List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest(searchType);
 
         return list;
     }
@@ -50,6 +50,7 @@ public class ReimburstService {
         Reimburstment reimburstment = new Reimburstment();
         reimburstment.setReimb_id(request.getReimb_id());
         reimburstment.setPayment_id(request.getPayment_id());
+        reimburstment.setResolver_id(request.getResolver_id());
 
         ReimburstmentStatus reimburstmentStatus = this.reimburstStatusDAO.getByStatus(request.getStatus());
 

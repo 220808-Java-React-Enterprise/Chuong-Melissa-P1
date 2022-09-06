@@ -10,7 +10,7 @@ public class ReimburstRequest {
 
     private String reimb_id;
 
-    private String search;
+    private String searchType;
     private BigDecimal amount;
 
     private LocalDateTime submitted;
@@ -37,12 +37,12 @@ public class ReimburstRequest {
 
     }
 
-    public String getSearch() {
-        return search;
+    public String getSearchType() {
+        return searchType;
     }
 
-    public void setSearch(String search) {
-        this.search = search;
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
     }
 
     public byte[] getReceipt() {

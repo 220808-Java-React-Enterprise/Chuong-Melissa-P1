@@ -23,13 +23,13 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("insert into ers_reimbursement_types (type_id, type) values (?, ?);");
+                    con.prepareStatement("insert into ers_reimburstments_types (type_id, type) values (?, ?);");
             ps.setString(1, obj.getType_id());
             ps.setString(2, obj.getType());
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.save()");
+            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.save(). " + e.getMessage());
         }
     }
 
@@ -38,13 +38,13 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     public void update(ReimburstmentType obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("update ers_reimbursement_types set type = ? where type_id = ? ");
+                    con.prepareStatement("update ers_reimburstments_types set type = ? where type_id = ? ");
             ps.setString(1, obj.getType());
             ps.setString(2, obj.getType_id());
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.update()");
+            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.update(). " + e.getMessage());
         }
     }
 
@@ -52,12 +52,12 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     public void delete(String id) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from ers_reimbursement_types where type_id = ?");
+                    con.prepareStatement("delete from ers_reimburstments_types where type_id = ?");
             ps.setString(1, id);
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.delete()");
+            throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.delete(). " + e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     public ReimburstmentType getById(String id) {
         ReimburstmentType reimburstmentType = new ReimburstmentType();
         try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from ers_reimbursement_types where type_id = ?");
+            PreparedStatement ps = conn.prepareStatement("select * from ers_reimburstments_types where type_id = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -81,7 +81,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     public ReimburstmentType getByType(String type) {
         ReimburstmentType reimburstmentType = new ReimburstmentType();
         try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from ers_reimbursement_types where type = ?");
+            PreparedStatement ps = conn.prepareStatement("select * from ers_reimburstments_types where type = ?");
             ps.setString(1, type);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -99,7 +99,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
         List<ReimburstmentType> typesList = new ArrayList<>();
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("select * from ers_reimbursement_types");
+            PreparedStatement ps = con.prepareStatement("select * from ers_reimburstments_types");
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
@@ -109,7 +109,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
                 typesList.add(t);
             }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+            throw new InvalidSQLException("An error occurred when tyring to ReimburstmentTypeDAO.getAll() to the database. " + e.getMessage());
         }
 
         return typesList;

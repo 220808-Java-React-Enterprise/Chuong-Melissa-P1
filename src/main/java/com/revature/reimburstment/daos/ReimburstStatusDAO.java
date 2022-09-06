@@ -18,7 +18,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("insert into ers_reimbursement_statuses (status_id, status) values (?, ?)");
+                    con.prepareStatement("insert into ers_reimburstments_statuses (status_id, status) values (?, ?)");
             ps.setString(1, obj.getStastus_id());
             ps.setString(2, obj.getStatus());
 
@@ -35,7 +35,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
         System.out.println(obj);
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("update ers_reimbursement_statuses set status = ? where status_id = ?");
+                    con.prepareStatement("update ers_reimburstments_statuses set status = ? where status_id = ?");
             ps.setString(1, obj.getStatus());
             ps.setString(2, obj.getStastus_id());
             ps.executeUpdate();
@@ -49,7 +49,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("delete from ers_reimbursement_statuses where status_id = ?");
+                    con.prepareStatement("delete from ers_reimburstments_statuses where status_id = ?");
             ps.setString(1, id);
 
             ps.executeUpdate();
@@ -81,7 +81,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
         ReimburstmentStatus reimStatus = new ReimburstmentStatus();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("select * from ers_reimbursement_statuses where status = ?");
+                    con.prepareStatement("select * from ers_reimburstments_statuses where status = ?");
             ps.setString(1, status);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -100,7 +100,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
         List<ReimburstmentStatus> statusList = new ArrayList<>();
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("select * from ers_reimbursement_statuses");
+            PreparedStatement ps = con.prepareStatement("select * from ers_reimburstments_statuses");
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {

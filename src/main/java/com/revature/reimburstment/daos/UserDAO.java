@@ -34,7 +34,7 @@ public class UserDAO implements CrudDAO<User> {
             ps.setString(8, obj.getRole_id());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+            throw new InvalidSQLException("An error occurred when tyring to UserDAO.save() to the database." + e.getMessage());
         }
     }
 

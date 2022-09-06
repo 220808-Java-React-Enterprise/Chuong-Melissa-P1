@@ -13,6 +13,8 @@ public class ReimburstmentFullRequest {
 
     private String submitted;
 
+    private String resolved;
+
     private String description;
 
     private  String payment_id;
@@ -31,6 +33,14 @@ public class ReimburstmentFullRequest {
 
     public ReimburstmentFullRequest() {
 
+    }
+
+    public String getResolved() {
+        return resolved;
+    }
+
+    public void setResolved(String resolved) {
+        this.resolved = resolved;
     }
 
     public String getReimb_id() {

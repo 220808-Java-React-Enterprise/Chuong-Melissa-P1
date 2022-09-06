@@ -25,7 +25,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.save()");
+            throw new InvalidSQLException("An error occurred at UserRoleDAO.save() " + e.getMessage());
         }
     }
 
@@ -38,7 +38,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
             ps.setString(2, obj.getRole_id());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.update()");
+            throw new InvalidSQLException("An error occurred at UserRoleDAO.update() " + e.getMessage());
         }
     }
 
@@ -52,7 +52,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete()");
+            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete() " + e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
             }
 
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred at UserRoleDAO.delete()");
+            throw new InvalidSQLException("An error occurred at UserRoleDAO.getById() " +  e.getMessage());
         }
         return userRole;
     }
@@ -88,7 +88,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
                 roleList.add(userRole);
             }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when trying to getAll() roles from database.");
+            throw new InvalidSQLException("An error occurred when trying to UserRoleDAO.getAll() roles from database. " + e.getMessage());
         }
         System.out.println(roleList);
         return roleList;
@@ -106,7 +106,7 @@ public class RoleDAO implements CrudDAO<UserRole> {
                 userRole = new UserRole(rs.getString("role_id"), rs.getString("role"));
             }
         } catch (SQLException e) {
-            throw new InvalidSQLException("An error occurred when trying to getAll() roles from database.");
+            throw new InvalidSQLException("An error occurred when trying to UserRoleDAO.getByRole() roles from database. " + e.getMessage());
         }
         return userRole;
     }
