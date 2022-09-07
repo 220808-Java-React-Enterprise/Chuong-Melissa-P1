@@ -47,7 +47,8 @@ public class ConnectionFactory {
         String username = "postgres";
         String password = "revature";
 
-        Connection conn = DriverManager.getConnection(url, username, password);
+        Connection conn = DriverManager.getConnection(
+                "jdbc:postgresql://revature.cbfjslydmnoj.us-west-1.rds.amazonaws.com:5432/postgres?currentSchema=reimbursement", "postgres", "revature");
         //Connection conn = DriverManager.getConnection(props.getProperty("url"), props.getProperty("username"), props.getProperty("password"));
 
         if (conn == null) throw new RuntimeException("Could not establish connection with the database!");
