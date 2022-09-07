@@ -131,23 +131,23 @@ public class UserDAO implements CrudDAO<User> {
     public User getUserByUsernameAndPassword(String username, String password) {
         User user = null;
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("select * from ers_users where username = ? and password = ?");
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String user_id = rs.getString("user_id");
-                String usernameTemp = rs.getString("username");
-                String role_id = rs.getString("role_id");
-                boolean is_active = rs.getBoolean("is_active");
-                user = new User();
-                user.setUser_id(user_id);
-                user.setUsername(usernameTemp);
-                user.setRole_id(role_id);
-                user.setIs_active(is_active);
-                return user;
-            }
+//            PreparedStatement ps = con.prepareStatement("select * from ers_users where username = ? and password = ?");
+//            ps.setString(1, username);
+//            ps.setString(2, password);
+//            ResultSet rs = ps.executeQuery();
+//
+//            if (rs.next()) {
+//                String user_id = rs.getString("user_id");
+//                String usernameTemp = rs.getString("username");
+//                String role_id = rs.getString("role_id");
+//                boolean is_active = rs.getBoolean("is_active");
+//                user = new User();
+//                user.setUser_id(user_id);
+//                user.setUsername(usernameTemp);
+//                user.setRole_id(role_id);
+//                user.setIs_active(is_active);
+//                return user;
+//            }
         } catch (SQLException e) {
             throw
                     new InvalidSQLException(
