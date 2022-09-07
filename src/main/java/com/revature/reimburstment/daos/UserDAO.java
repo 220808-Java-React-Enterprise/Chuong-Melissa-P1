@@ -153,7 +153,7 @@ public class UserDAO implements CrudDAO<User> {
                     new InvalidSQLException(
                             "An error occurred when tyring to getUserByUsernameAndPassword() to the database." +
                             "username:" + username +
-                            "  password:" + password);
+                            "  password:" + password + " : " + e.getMessage());
         }
 
         return null;
