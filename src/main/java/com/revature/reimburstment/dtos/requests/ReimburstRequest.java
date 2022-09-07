@@ -11,6 +11,8 @@ public class ReimburstRequest {
     private String reimb_id;
 
     private String searchType;
+
+    private String type_id;
     private BigDecimal amount;
 
     private LocalDateTime submitted;
@@ -35,6 +37,14 @@ public class ReimburstRequest {
 
     public ReimburstRequest() {
 
+    }
+
+    public String getType_id() {
+        return type_id;
+    }
+
+    public void setType_id(String type_id) {
+        this.type_id = type_id;
     }
 
     public String getSearchType() {

@@ -1,10 +1,12 @@
 package com.revature.reimburstment.services;
 
+import com.revature.reimburstment.daos.RoleDAO;
 import com.revature.reimburstment.daos.UserDAO;
 import com.revature.reimburstment.dtos.requests.LoginRequest;
 import com.revature.reimburstment.dtos.requests.NewUserRequest;
 import com.revature.reimburstment.dtos.responses.Principal;
 import com.revature.reimburstment.models.User;
+import com.revature.reimburstment.models.UserRole;
 import com.revature.reimburstment.utils.custom_exceptions.AuthenticationException;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidRequestException;
 import com.revature.reimburstment.utils.custom_exceptions.InvalidTypeException;
@@ -16,8 +18,11 @@ import java.util.UUID;
 public class UserService {
     private final UserDAO userDAO;
 
+    private final RoleDAO roleDAO;
+
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
+        this.roleDAO = new RoleDAO();
     }
 
     // register a new user to the system. validation on username and password
@@ -47,7 +52,9 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        return userDAO.getAll();
+        List<User> usersList = userDAO.getAll();
+
+        return usersList;
     }
 
     public Principal login(LoginRequest request) {

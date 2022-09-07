@@ -56,6 +56,22 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
         }
     }
 
+    public void updateEmployeeReimburstment(Reimburstment obj) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps =
+                    con.prepareStatement("update ers_reimburstments set receipt = ?, amount = ?, description = ?, type_id = ? where reimb_id = ? ;");
+
+            ps.setBytes(1,obj.getReceipt());
+            ps.setBigDecimal(2, obj.getAmount());
+            ps.setString(3, obj.getDescription());
+            ps.setString(4, obj.getType_id());
+            ps.setString(5, obj.getReimb_id());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.update() to the database. " + e.getMessage());
+        }
+    }
     @Override
     public void update(Reimburstment obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
@@ -138,6 +154,66 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
             return reimList;
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.getAllReimburstForRequest(String searchType, String searchStatus) to the database. " + e.getMessage());
+        }
+    }
+
+    public List<ReimburstmentFullRequest> getAllReimburstById(String userId) {
+        List<ReimburstmentFullRequest> reimList = new ArrayList<>();
+
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            String sql = "select \n" +
+                    "\tr.reimb_id, u.user_id, r.amount, r.submitted, r.resolved, r.description, r.payment_id, \n" +
+                    "\tu.given_name as author_first_name, u.surname as author_last_name, \n" +
+                    "\tu1.given_name as resolver_first_name, u1.surname as resolver_last_name, \n" +
+                    "\tt.type as reimburst_type , s.status as reimburst_status  \n" +
+                    "from ers_reimburstments r\n" +
+                    "\tinner join ers_reimburstments_statuses s on r.status_id = s.status_id \n" +
+                    "\tinner join ers_reimburstments_types t on r.type_id  = t.type_id\n" +
+                    "\tinner join ers_users u on r.author_id = u.user_id\n" +
+                    "\tinner join ers_users u1 on r.resolver_id = u1.user_id where u.user_id = ? ;";
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                ReimburstmentFullRequest r = new ReimburstmentFullRequest();
+                r.setReimb_id(rs.getString("reimb_id"));
+                r.setAmount(rs.getBigDecimal("amount"));
+                r.setSubmitted(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rs.getTimestamp("submitted")));
+
+                if(rs.getTimestamp("resolved") == null) {
+                    r.setResolved("Process soon...");
+                } else {
+                    r.setResolved(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(rs.getTimestamp("resolved")));
+                }
+
+                r.setDescription(rs.getString("description"));
+                r.setPayment_id(rs.getString("payment_id"));
+                r.setAuthor_first_name(rs.getString("author_first_name"));
+                r.setAuthor_last_name(rs.getString("author_last_name"));
+
+                if(rs.getString("resolver_first_name") == null) {
+                    r.setResolver_first_name("Not yet assigned");
+                }else {
+                    r.setResolver_first_name(rs.getString("resolver_first_name"));
+                }
+
+                if(rs.getString("resolver_last_name") == null) {
+                    r.setResolver_last_name("Not yet assigned");
+                }else {
+                    r.setResolver_last_name(rs.getString("resolver_last_name"));
+                }
+
+
+
+                r.setReimburst_type(rs.getString("reimburst_type"));
+                r.setReimburst_status(rs.getString("reimburst_status"));
+
+                reimList.add(r);
+            }
+            return reimList;
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.getAllReimburstForRequest() to the database. " + e.getMessage());
         }
     }
 

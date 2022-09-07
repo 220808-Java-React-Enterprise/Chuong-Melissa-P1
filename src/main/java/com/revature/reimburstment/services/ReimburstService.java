@@ -1,9 +1,11 @@
 package com.revature.reimburstment.services;
 
 import com.revature.reimburstment.daos.*;
+import com.revature.reimburstment.dtos.requests.ReimUpdateRequest;
 import com.revature.reimburstment.dtos.requests.ReimburstRequest;
 import com.revature.reimburstment.dtos.requests.ReimburstmentFullRequest;
 import com.revature.reimburstment.models.*;
+import com.revature.reimburstment.utils.custom_exceptions.InvalidTypeException;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -40,6 +42,11 @@ public class ReimburstService {
         return list;
     }
 
+    public List<ReimburstmentFullRequest> getAllReimburstById(String userId) {
+        List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstById(userId);
+        return list;
+    }
+
     public List<ReimburstmentFullRequest> getAllReimburstForRequest(String searchType) {
         List<ReimburstmentFullRequest> list = reimburstDAO.getAllReimburstForRequest(searchType);
 
@@ -56,6 +63,34 @@ public class ReimburstService {
 
         reimburstment.setStatus_id(reimburstmentStatus.getStastus_id());
         reimburstDAO.update(reimburstment);
+    }
+
+    public void updateEmployeeReimburstment(ReimUpdateRequest request) {
+        Reimburstment reimburstment = new ReimburstDAO().getById(request.getReimb_id());
+        ReimburstmentStatus status = new ReimburstStatusDAO().getById(reimburstment.getStatus_id());
+
+        if(status.getStatus().equals("PENDING")) {
+            reimburstment.setReceipt(request.getReceipt());
+            reimburstment.setReimb_id(request.getReimb_id());
+            reimburstment.setAmount(request.getAmount());
+            reimburstment.setDescription(request.getDescription());
+            reimburstment.setType_id(request.getType_id());
+            //reimburstDAO.updateEmployeeReimburstment(reimburstment);
+
+        } else {
+            throw new InvalidTypeException("Reimburstment is already processed.");
+        }
+
+
+//        Reimburstment reimburstment = new Reimburstment();
+//        reimburstment.setReimb_id(request.getReimb_id());
+//        reimburstment.setPayment_id(request.getPayment_id());
+//        reimburstment.setResolver_id(request.getResolver_id());
+//
+//        ReimburstmentStatus reimburstmentStatus = this.reimburstStatusDAO.getByStatus(request.getStatus());
+//
+//        reimburstment.setStatus_id(reimburstmentStatus.getStastus_id());
+//        reimburstDAO.update(reimburstment);
     }
 
 

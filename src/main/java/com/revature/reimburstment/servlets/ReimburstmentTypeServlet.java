@@ -71,7 +71,7 @@ public class ReimburstmentTypeServlet extends HttpServlet {
             //String role = getRole(req, resp);
             String role = getRoleWithSession(req);
 
-            if(role.equals("ADMIN")) {
+            if(role.equals("ADMIN") || role.equals("FINANCE") || role.equals("EMPLOYEE")) {
                 List<ReimburstmentType> types = reimburstmentTypeService.getAll();
                 System.out.println(types);
                 resp.setContentType("application/json");

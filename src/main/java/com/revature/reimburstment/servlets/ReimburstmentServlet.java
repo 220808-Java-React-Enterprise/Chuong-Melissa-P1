@@ -6,6 +6,7 @@ import com.revature.reimburstment.daos.ReimburstStatusDAO;
 import com.revature.reimburstment.daos.RoleDAO;
 import com.revature.reimburstment.daos.TestingDAO;
 import com.revature.reimburstment.dtos.requests.NewUserRequest;
+import com.revature.reimburstment.dtos.requests.ReimUpdateRequest;
 import com.revature.reimburstment.dtos.requests.ReimburstRequest;
 import com.revature.reimburstment.dtos.requests.ReimburstmentFullRequest;
 import com.revature.reimburstment.dtos.responses.Principal;
@@ -73,14 +74,40 @@ public class ReimburstmentServlet extends HttpServlet {
         {
             //String role = getRole(req, resp);
             String role = getRoleWithSession(req);
+
+            String userId = getUserIdWithSession(req);
+
             if (role.equals("FINANCE"))
             {
                 ReimburstRequest request = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
-                String userId = getUserIdWithSession(req);
                 request.setResolver_id(userId);
                 reimburstService.update(request);
                 resp.setContentType("application/json");
                 resp.getWriter().write(mapper.writeValueAsString("Updated Reimburstment " + request.getReimb_id()));
+            }
+            else if(role.equals("EMPLOYEE") || role.equals("ADMIN")) {
+
+//                ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
+//                InputStream is = null;
+//                ReimUpdateRequest reimUpdateRequest = null;
+//                List<FileItem> multifiles = sf.parseRequest(req);
+//                for (FileItem item : multifiles) {
+//                    String itemFileName = item.getName();
+//                    if (itemFileName != null) {
+//                        is = item.getInputStream();
+//                    } else {
+//                        reimUpdateRequest = mapper.readValue(req.getInputStream(), ReimUpdateRequest.class);
+//
+//                    }
+//                }
+//
+//                byte[] bytes = IOUtils.toByteArray(is);
+                //reimUpdateRequest.setReceipt(bytes);
+                //reimburstService.updateEmployeeReimburstment(reimUpdateRequest);
+
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString("Updated Reimburstment"));
+
             }
 
         } catch(InvalidRequestException e){
@@ -88,9 +115,57 @@ public class ReimburstmentServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
         } catch(ResourceConflictException e){
             resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch(Exception e){
             resp.setStatus(404);
-            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
+        try {
+            String role = getRoleWithSession(req);
+            if (role.equals("ADMIN") || role.equals("EMPLOYEE") || role.equals("FINANCE")) {
+                ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
+                InputStream is = null;
+                ReimburstRequest reimburstRequest = null;
+                List<FileItem> multifiles = sf.parseRequest(req);
+                for (FileItem item : multifiles) {
+                    String itemFileName = item.getName();
+                    if (itemFileName != null) {
+                        is = item.getInputStream();
+                    } else {
+                        reimburstRequest = mapper.readValue(item.getInputStream(), ReimburstRequest.class);
+
+                    }
+                }
+
+                byte[] bytes = IOUtils.toByteArray(is);
+
+                reimburstRequest.setReceipt(bytes);
+                String author_id = getUserIdWithSession(req);
+                reimburstRequest.setAuthor_id(author_id);
+
+                reimburstService.createReimburst(reimburstRequest);
+
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("record saved"));
+
+            }// end if
+
+        } catch (FileUploadException e) {
+            throw new RuntimeException(e);
+        } catch(InvalidRequestException e){
+            resp.setStatus(403);
+            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
+        } catch(ResourceConflictException e){
+            resp.setStatus(409);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        } catch(Exception e){
+            resp.setStatus(404);
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         }
     }
@@ -102,25 +177,27 @@ public class ReimburstmentServlet extends HttpServlet {
         {
             //String role = getRole(req, resp);
             String role = getRoleWithSession(req);
+            ReimburstRequest request = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
+            String userId = getUserIdWithSession(req);
+            ReimburstmentStatus reimburstmentStatus = new ReimburstStatusDAO().getByStatus("PENDING");
+            reimburstService.initializeResolver(userId, reimburstmentStatus);
+
+            List<ReimburstmentFullRequest> reimList = null;
+            String searchType = request.getSearchType().toUpperCase();
             if (role.equals("FINANCE"))
             {
-                ReimburstRequest request = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
-                String userId = getUserIdWithSession(req);
-                ReimburstmentStatus reimburstmentStatus = new ReimburstStatusDAO().getByStatus("PENDING");
-                reimburstService.initializeResolver(userId, reimburstmentStatus);
-
-                List<ReimburstmentFullRequest> reimList = null;
-                String searchType = request.getSearchType().toUpperCase();
-
                 if(!searchType.equals("ALL")) {
                     reimList = reimburstService.getAllReimburstForRequest(searchType);
                 }else {
                     reimList = reimburstService.getAllReimburstForRequest();
                 }
-
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(reimList));
             }
+            else if(role.equals("EMPLOYEE") || role.equals("ADMIN"))
+            {
+                reimList = reimburstService.getAllReimburstById(userId);
+            }
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(reimList));
 
         } catch(InvalidRequestException e){
             resp.setStatus(403);
@@ -198,52 +275,5 @@ public class ReimburstmentServlet extends HttpServlet {
     }
 
 
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-
-        try {
-            String role = getRoleWithSession(req);
-            if (role.equals("ADMIN") || role.equals("EMPLOYEE") || role.equals("FINANCE")) {
-                ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-                InputStream is = null;
-                ReimburstRequest reimburstRequest = null;
-                List<FileItem> multifiles = sf.parseRequest(req);
-                for (FileItem item : multifiles) {
-                    String itemFileName = item.getName();
-                    if (itemFileName != null) {
-
-                        is = item.getInputStream();
-                    } else {
-                        reimburstRequest = mapper.readValue(item.getInputStream(), ReimburstRequest.class);
-
-                    }
-                }
-
-                byte[] bytes = IOUtils.toByteArray(is);
-
-                reimburstRequest.setReceipt(bytes);
-                String author_id = getUserIdWithSession(req);
-                reimburstRequest.setAuthor_id(author_id);
-
-                reimburstService.createReimburst(reimburstRequest);
-
-                resp.setStatus(200);
-                resp.getWriter().write(mapper.writeValueAsString("record saved"));
-
-            }// end if
-
-        } catch (FileUploadException e) {
-            throw new RuntimeException(e);
-        } catch(InvalidRequestException e){
-            resp.setStatus(403);
-            resp.getWriter().write(mapper.writeValueAsString("Invalid Credential"));
-        } catch(ResourceConflictException e){
-            resp.setStatus(409);
-            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
-        } catch(Exception e){
-            resp.setStatus(404);
-            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
-        }
-    }
 }

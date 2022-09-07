@@ -2,6 +2,7 @@ package com.revature.reimburstment.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.reimburstment.daos.*;
+import com.revature.reimburstment.models.UserRole;
 import com.revature.reimburstment.services.*;
 import com.revature.reimburstment.servlets.*;
 
@@ -18,8 +19,7 @@ public class ContextLoaderListener implements ServletContextListener {
         /* Dependency Injection */
         TestServlet testServlet = new TestServlet();
         AuthServlet authServlet = new AuthServlet(mapper, new TokenService(new JwtConfig()), new UserService(new UserDAO()));
-        UserServlet userServlet = new UserServlet(mapper, new TokenService(new JwtConfig()),
-                new UserService(new UserDAO()), new RoleService(new RoleDAO()));
+        UserServlet userServlet = new UserServlet(mapper, new TokenService(new JwtConfig()), new UserService(new UserDAO()), new RoleService(new RoleDAO()));
 
 
         UserRoleServlet userRoleServlet = new UserRoleServlet(mapper,  new TokenService(new JwtConfig()), new RoleService(new RoleDAO()));
