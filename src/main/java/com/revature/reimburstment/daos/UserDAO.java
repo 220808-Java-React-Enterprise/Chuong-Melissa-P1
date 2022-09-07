@@ -130,7 +130,7 @@ public class UserDAO implements CrudDAO<User> {
 
     public User getUserByUsernameAndPassword(String username, String password) {
         User user = null;
-        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+//        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
 //            PreparedStatement ps = con.prepareStatement("select * from ers_users where username = ? and password = ?");
 //            ps.setString(1, username);
 //            ps.setString(2, password);
@@ -148,13 +148,13 @@ public class UserDAO implements CrudDAO<User> {
 //                user.setIs_active(is_active);
 //                return user;
 //            }
-        } catch (SQLException e) {
-            throw
-                    new InvalidSQLException(
-                            "An error occurred when tyring to getUserByUsernameAndPassword() to the database." +
-                            "username:" + username +
-                            "  password:" + password + " : " + e.getMessage());
-        }
+//        } catch (SQLException e) {
+//            throw
+//                    new InvalidSQLException(
+//                            "An error occurred when tyring to getUserByUsernameAndPassword() to the database." +
+//                            "username:" + username +
+//                            "  password:" + password + " : " + e.getMessage());
+//        }
 
         return null;
     }
