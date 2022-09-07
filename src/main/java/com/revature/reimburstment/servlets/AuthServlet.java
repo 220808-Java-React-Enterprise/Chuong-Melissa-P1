@@ -44,16 +44,13 @@ public class AuthServlet extends HttpServlet {
             Principal principal = userService.login(request);
             String token = tokenService.generateToken(principal);
 
+            HttpSession session = req.getSession(true);
+            session.setAttribute("token", token);
+
+            resp.setStatus(200);
+            resp.setHeader("Authoriztion", token);
             resp.setContentType("application/json");
-            resp.getWriter().write(mapper.writeValueAsString("Welcome " + principal));
-//
-//            HttpSession session = req.getSession(true);
-//            session.setAttribute("token", token);
-//
-//            resp.setStatus(200);
-//            resp.setHeader("Authoriztion", token);
-//            resp.setContentType("application/json");
-//            resp.getWriter().write(mapper.writeValueAsString("Welcome " + principal.getUsername()));
+            resp.getWriter().write(mapper.writeValueAsString("Welcome " + principal.getUsername()));
 
         }catch(InvalidRequestException e) {
             resp.setStatus(404);
