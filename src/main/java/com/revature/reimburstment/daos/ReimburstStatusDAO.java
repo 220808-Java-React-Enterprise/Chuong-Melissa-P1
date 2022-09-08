@@ -63,7 +63,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
         ReimburstmentStatus reimStatus = new ReimburstmentStatus();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("select * from ers_user_roles where role_id = ?");
+                    con.prepareStatement("select * from ers_reimburstments_statuses where status_id = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {

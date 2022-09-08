@@ -57,15 +57,19 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
     }
 
     public void updateEmployeeReimburstment(Reimburstment obj) {
+        System.out.println("reibm_id:" + obj.getReimb_id());
+        System.out.println("amount:" + obj.getAmount());
+        System.out.println("description:" + obj.getDescription());
+        System.out.println("type_id:" + obj.getType_id());
+
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
-                    con.prepareStatement("update ers_reimburstments set receipt = ?, amount = ?, description = ?, type_id = ? where reimb_id = ? ;");
+                    con.prepareStatement("update ers_reimburstments set amount = ?, description = ?, type_id = ? where reimb_id = ? ;");
 
-            ps.setBytes(1,obj.getReceipt());
-            ps.setBigDecimal(2, obj.getAmount());
-            ps.setString(3, obj.getDescription());
-            ps.setString(4, obj.getType_id());
-            ps.setString(5, obj.getReimb_id());
+            ps.setBigDecimal(1, obj.getAmount());
+            ps.setString(2, obj.getDescription());
+            ps.setString(3, obj.getType_id());
+            ps.setString(4, obj.getReimb_id());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -97,7 +101,36 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
 
     @Override
     public Reimburstment getById(String id) {
-        return null;
+        Connection con = null;
+        try {
+            con = ConnectionFactory.getInstance().getConnection();
+            PreparedStatement ps =
+                    con.prepareStatement("select reimb_id, amount, description, status_id, type_id from ers_reimburstments where reimb_id = ?;");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            Reimburstment reimburstment = new Reimburstment();
+            while(rs.next()) {
+                reimburstment.setReimb_id(rs.getString("reimb_id"));
+                reimburstment.setAmount(rs.getBigDecimal("amount"));
+                reimburstment.setDescription(rs.getString("description"));
+                reimburstment.setStatus_id(rs.getString("status_id"));
+                reimburstment.setType_id(rs.getString("type_id"));
+
+            }
+
+            return reimburstment;
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.update() to the database. " + e.getMessage());
+        } finally {
+            if(con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     public List<ReimburstmentFullRequest> getAllReimburstForRequest(String searchType) {

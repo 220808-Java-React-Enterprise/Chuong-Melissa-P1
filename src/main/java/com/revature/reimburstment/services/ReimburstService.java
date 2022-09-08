@@ -67,30 +67,28 @@ public class ReimburstService {
 
     public void updateEmployeeReimburstment(ReimUpdateRequest request) {
         Reimburstment reimburstment = new ReimburstDAO().getById(request.getReimb_id());
+
+        System.out.println("service return from ADO: " + reimburstment);
+
         ReimburstmentStatus status = new ReimburstStatusDAO().getById(reimburstment.getStatus_id());
+        ReimburstmentType rt = new ReimburstmentTypeDAO().getByType(request.getType());
+
+        System.out.println("reim:" + reimburstment);
+        System.out.println("status:" + status);
+        System.out.println("type:" + rt);
 
         if(status.getStatus().equals("PENDING")) {
-            reimburstment.setReceipt(request.getReceipt());
-            reimburstment.setReimb_id(request.getReimb_id());
             reimburstment.setAmount(request.getAmount());
             reimburstment.setDescription(request.getDescription());
-            reimburstment.setType_id(request.getType_id());
-            //reimburstDAO.updateEmployeeReimburstment(reimburstment);
+            reimburstment.setType_id(rt.getType_id());
+            System.out.println("reimburstment: " + reimburstment);
+
+            System.out.println("init usr request before sending to ADO: " + reimburstment);
+            reimburstDAO.updateEmployeeReimburstment(reimburstment);
 
         } else {
             throw new InvalidTypeException("Reimburstment is already processed.");
         }
-
-
-//        Reimburstment reimburstment = new Reimburstment();
-//        reimburstment.setReimb_id(request.getReimb_id());
-//        reimburstment.setPayment_id(request.getPayment_id());
-//        reimburstment.setResolver_id(request.getResolver_id());
-//
-//        ReimburstmentStatus reimburstmentStatus = this.reimburstStatusDAO.getByStatus(request.getStatus());
-//
-//        reimburstment.setStatus_id(reimburstmentStatus.getStastus_id());
-//        reimburstDAO.update(reimburstment);
     }
 
 

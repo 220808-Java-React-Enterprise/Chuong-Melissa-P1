@@ -77,6 +77,7 @@ public class ReimburstmentServlet extends HttpServlet {
 
             String userId = getUserIdWithSession(req);
 
+
             if (role.equals("FINANCE"))
             {
                 ReimburstRequest request = mapper.readValue(req.getInputStream(), ReimburstRequest.class);
@@ -86,28 +87,12 @@ public class ReimburstmentServlet extends HttpServlet {
                 resp.getWriter().write(mapper.writeValueAsString("Updated Reimburstment " + request.getReimb_id()));
             }
             else if(role.equals("EMPLOYEE") || role.equals("ADMIN")) {
-
-//                ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-//                InputStream is = null;
-//                ReimUpdateRequest reimUpdateRequest = null;
-//                List<FileItem> multifiles = sf.parseRequest(req);
-//                for (FileItem item : multifiles) {
-//                    String itemFileName = item.getName();
-//                    if (itemFileName != null) {
-//                        is = item.getInputStream();
-//                    } else {
-//                        reimUpdateRequest = mapper.readValue(req.getInputStream(), ReimUpdateRequest.class);
-//
-//                    }
-//                }
-//
-//                byte[] bytes = IOUtils.toByteArray(is);
-                //reimUpdateRequest.setReceipt(bytes);
-                //reimburstService.updateEmployeeReimburstment(reimUpdateRequest);
+                ReimUpdateRequest reimUpdateRequest = mapper.readValue(req.getInputStream(), ReimUpdateRequest.class);
+                reimburstService.updateEmployeeReimburstment(reimUpdateRequest);
 
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString("Updated Reimburstment"));
-
+                resp.setStatus(200);
+                resp.getWriter().write(mapper.writeValueAsString("Update reimburstment: " + reimUpdateRequest));
             }
 
         } catch(InvalidRequestException e){
