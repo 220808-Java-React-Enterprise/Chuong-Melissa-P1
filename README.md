@@ -2,7 +2,7 @@
 
 ## Project Description
 
-Melissa Clark and John Nguyen created a Reimbursement System that allows multiple users to log in with different credentials and receive reimbursement for costs they have accrued through their company.  Using JWT we are able to give each use different permissions accourding to their roles as shown below.
+Melissa Clark and John Nguyen created a Reimbursement System that allows multiple users to log in with different credentials and receive reimbursement for costs they have accrued through their company.  Using JWT we are able to give each user different permissions accourding to their roles as shown below.
 
 ### Project Management
   Agile Methodology
