@@ -53,4 +53,4 @@ Reimbursements are to be one of the following types:
 - An admin user can reset a registered user's password
 - Authenticated employees are able to upload an receipt image along with their reimbursement request
 
-###Creators: John Nguyen & Melissa Clark
+### Creators: John Nguyen & Melissa Clark
