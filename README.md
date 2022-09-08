@@ -8,18 +8,18 @@ For the foundations module of your training you are tasked with building an API 
   Agile Methodology
 
 ### Frontend
-  Postman API Services
+ - Postman API Services
 
 ### Backend
-  Java 8
-  Tomcat
-  Maven
-  Postgres
+- Java 8
+- Tomcat
+- Maven
+- Postgres
 
 ### Devops
-  Github
-  Jenkins
-  AWS
+- Github
+- Jenkins
+- AWS
 
 ##### Relational Data Model
 ![Relational Model](https://github.com/220207-java-enterprise/assignments/blob/main/foundations-project/imgs/ERS%20Relational%20Model.png)
