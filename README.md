@@ -1,10 +1,25 @@
-# Java Enterprise Foundations Project Requirements
+# P1 Reimbursement
 
 ## Project Description
 
 For the foundations module of your training you are tasked with building an API that will support a new internal expense reimbursement system. This system will manage the process of reimbursing employees for expenses incurred while on company time. All registered employees in the company can login and submit requests for reimbursement and view their past tickets and pending requests. Finance managers can log in and view all reimbursement requests and past history for all employees in the company. Finance managers are authorized to approve and deny requests for expense reimbursement.
 
-### Project Design Specifications and Documents
+### Project Management
+  Agile Methodology
+
+### Frontend
+  Postman API Services
+
+### Backend
+  Java 8
+  Tomcat
+  Maven
+  Postgres
+
+### Devops
+  Github
+  Jenkins
+  AWS
 
 ##### Relational Data Model
 ![Relational Model](https://github.com/220207-java-enterprise/assignments/blob/main/foundations-project/imgs/ERS%20Relational%20Model.png)
