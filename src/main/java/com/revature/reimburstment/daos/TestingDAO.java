@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class TestingDAO implements CrudDAO <Testing>{
     @Override
-    public void save(Testing obj) throws IOException {
+    public int save(Testing obj) throws IOException {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement(
@@ -38,15 +38,15 @@ public class TestingDAO implements CrudDAO <Testing>{
             if(obj.getInputStream() != null) {
                 System.out.println("inputStream is not null");
             }
-           ps.executeUpdate();
+           return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
     }
 
     @Override
-    public void update(Testing obj) {
-
+    public int update(Testing obj) {
+        return 1;
     }
 
     @Override

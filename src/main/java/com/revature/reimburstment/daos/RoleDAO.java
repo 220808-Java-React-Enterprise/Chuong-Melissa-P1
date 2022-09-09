@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RoleDAO implements CrudDAO<UserRole> {
     @Override
-    public void save(UserRole obj) throws IOException {
+    public int save(UserRole obj) throws IOException {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
@@ -23,20 +23,20 @@ public class RoleDAO implements CrudDAO<UserRole> {
             ps.setString(1, obj.getRole_id());
             ps.setString(2, obj.getRole());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at UserRoleDAO.save() " + e.getMessage());
         }
     }
 
     @Override
-    public void update(UserRole obj) {
+    public int update(UserRole obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("update ers_user_roles set role = ? where role_id = ?");
             ps.setString(1, obj.getRole());
             ps.setString(2, obj.getRole_id());
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at UserRoleDAO.update() " + e.getMessage());
         }

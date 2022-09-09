@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
     @Override
-    public void save(ReimburstmentStatus obj) throws IOException {
+    public int save(ReimburstmentStatus obj) throws IOException {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
@@ -22,7 +22,7 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
             ps.setString(1, obj.getStastus_id());
             ps.setString(2, obj.getStatus());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at UserReimburstStatusDAO.save()");
         }
@@ -31,14 +31,14 @@ public class ReimburstStatusDAO implements CrudDAO<ReimburstmentStatus> {
 
 
     @Override
-    public void update(ReimburstmentStatus obj) {
+    public int update(ReimburstmentStatus obj) {
         System.out.println(obj);
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("update ers_reimburstments_statuses set status = ? where status_id = ?");
             ps.setString(1, obj.getStatus());
             ps.setString(2, obj.getStastus_id());
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at ReimburstStatusDAO.update() " + e.getMessage());
         }

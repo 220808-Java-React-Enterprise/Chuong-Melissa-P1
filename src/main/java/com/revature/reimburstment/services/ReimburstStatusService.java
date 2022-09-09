@@ -25,9 +25,15 @@ public class ReimburstStatusService {
     }
 
 
-    public void update(ReimburstmentStatusRequest request) {
+    public boolean update(ReimburstmentStatusRequest request) {
         ReimburstmentStatus reimburstmentStatus = new ReimburstmentStatus(request.getStatus_id(), request.getStatus());
-        reimburstStatusDAO.update(reimburstmentStatus);
+        int result = reimburstStatusDAO.update(reimburstmentStatus);
+
+        if(result >= 1) {
+            return true;
+        }
+
+        return false;
     }
 
 

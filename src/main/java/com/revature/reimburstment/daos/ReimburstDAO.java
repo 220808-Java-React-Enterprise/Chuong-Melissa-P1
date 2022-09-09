@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class ReimburstDAO implements CrudDAO<Reimburstment> {
     @Override
-    public void save(Reimburstment obj) throws IOException {
+    public int save(Reimburstment obj) throws IOException {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement(
@@ -50,7 +50,7 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
             ps.setString(10, obj.getStatus_id());
             ps.setString(11, obj.getType_id());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.save() to the database." + e.getMessage());
         }
@@ -77,7 +77,7 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
         }
     }
     @Override
-    public void update(Reimburstment obj) {
+    public int update(Reimburstment obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("update ers_reimburstments set payment_id = ?, status_id = ?, resolved = ?, resolver_id = ? where reimb_id = ? ;");
@@ -88,7 +88,7 @@ public class ReimburstDAO implements CrudDAO<Reimburstment> {
             ps.setString(4, obj.getResolver_id());
             ps.setString(5, obj.getReimb_id());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to ReimburstDAO.update() to the database. " + e.getMessage());
         }

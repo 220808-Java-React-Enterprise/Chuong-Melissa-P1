@@ -19,7 +19,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
     }
 
     @Override
-    public void save(ReimburstmentType obj) throws IOException {
+    public int save(ReimburstmentType obj) throws IOException {
 
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
@@ -27,7 +27,7 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
             ps.setString(1, obj.getType_id());
             ps.setString(2, obj.getType());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.save(). " + e.getMessage());
         }
@@ -35,14 +35,14 @@ public class ReimburstmentTypeDAO implements CrudDAO<ReimburstmentType> {
 
 
     @Override
-    public void update(ReimburstmentType obj) {
+    public int update(ReimburstmentType obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement("update ers_reimburstments_types set type = ? where type_id = ? ");
             ps.setString(1, obj.getType());
             ps.setString(2, obj.getType_id());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred at ReimburstmentTypeDAO.update(). " + e.getMessage());
         }

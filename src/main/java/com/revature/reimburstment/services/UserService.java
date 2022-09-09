@@ -27,6 +27,11 @@ public class UserService {
         this.roleDAO = new RoleDAO();
     }
 
+    public static void validateUsername(String password) {
+        if(!password.matches("^[A-Za-z\\d@$!%*?&]{5,30}$"))
+            throw new InvalidRequestException("Password must be between 5 and 30 alphanumeric or special characters.");
+    }
+
     // register a new user to the system. validation on username and password
     public User register(NewUserRequest request) {
         User user = null;
@@ -66,6 +71,11 @@ public class UserService {
         return new Principal(user.getUser_id(), user.getUsername(), user.getRole_id());
     }
 
+    public static void validatePassword(String password) throws InvalidRequestException {
+        if(!password.matches("^[A-Za-z\\d@$!%*?&]{5,30}$"))
+            throw new InvalidRequestException("Password must be between 5 and 30 alphanumeric or special characters.");
+    }
+
     public User getUserById(String id) {
         return userDAO.getById(id);
     }
@@ -80,7 +90,7 @@ public class UserService {
         return true;
     }
 
-    public boolean isDuplicateUsername(String username) {
+    public  boolean isDuplicateUsername(String username) {
         if (userDAO.getUsername(username) != null) throw new ResourceConflictException("Sorry, " + username + " already been taken :(");
         return false;
     }

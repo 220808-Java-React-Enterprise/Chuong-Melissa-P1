@@ -19,7 +19,7 @@ import java.util.List;
 public class UserDAO implements CrudDAO<User> {
 
     @Override
-    public void save(User obj) {
+    public int save(User obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement(
@@ -32,14 +32,14 @@ public class UserDAO implements CrudDAO<User> {
             ps.setString(6, obj.getSurname());
             ps.setBoolean(7, obj.is_active());
             ps.setString(8, obj.getRole_id());
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to UserDAO.save() to the database." + e.getMessage());
         }
     }
 
     @Override
-    public void update(User obj) {
+    public int update(User obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps =
                     con.prepareStatement(
@@ -48,7 +48,7 @@ public class UserDAO implements CrudDAO<User> {
             ps.setString(2, obj.getRole_id());
             ps.setString(3, obj.getUser_id());
 
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
